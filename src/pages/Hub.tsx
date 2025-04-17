@@ -34,21 +34,6 @@ const Hub = () => {
       }
     },
     {
-      id: "cudid",
-      name: "China Unique Device Identification Database",
-      shortName: "CUDID",
-      description: "China Unique Device Identification Database",
-      totalDevices: 0,
-      color: "#9B87F5",
-      isAccessible: false,
-      status: {
-        created: 0,
-        processed: 0,
-        submitted: 0,
-        needsUpdate: 0
-      }
-    },
-    {
       id: "imdis",
       name: "South Korean UDI Database",
       shortName: "IMDIS",
@@ -94,6 +79,21 @@ const Hub = () => {
       }
     },
     {
+      id: "cudid",
+      name: "China Unique Device Identification Database",
+      shortName: "CUDID",
+      description: "China Unique Device Identification Database",
+      totalDevices: 0,
+      color: "#9B87F5",
+      isAccessible: false,
+      status: {
+        created: 0,
+        processed: 0,
+        submitted: 0,
+        needsUpdate: 0
+      }
+    },
+    {
       id: "saudi-di",
       name: "Saudi UDI Database",
       shortName: "Saudi-DI",
@@ -111,11 +111,16 @@ const Hub = () => {
     }
   ];
 
+  // Sort agencies: accessible agencies first, then inaccessible agencies
+  const sortedAgencies = [...agencies].sort((a, b) => 
+    (a.isAccessible === false ? 1 : -1)
+  );
+
   return (
     <div className="container mx-auto py-6 px-4">
       <h1 className="text-2xl font-bold mb-6">Agency Status Hub</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {agencies.map(agency => (
+        {sortedAgencies.map(agency => (
           <AgencyCard key={agency.id} agency={agency} />
         ))}
       </div>
