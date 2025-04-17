@@ -70,6 +70,7 @@ const Index = () => {
         currentStep={currentStep} 
         totalSteps={totalSteps} 
         stepLabels={stepLabels}
+        onStepClick={goToStep}
       />
       
       {currentStep === 1 && (

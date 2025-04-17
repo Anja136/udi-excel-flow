@@ -5,13 +5,22 @@ interface StepIndicatorProps {
   currentStep: number;
   totalSteps: number;
   stepLabels?: string[];
+  onStepClick?: (step: number) => void;
 }
 
 const StepIndicator: React.FC<StepIndicatorProps> = ({ 
   currentStep, 
   totalSteps,
-  stepLabels = [] 
+  stepLabels = [],
+  onStepClick
 }) => {
+  const handleStepClick = (step: number) => {
+    // Only allow clicking on previous steps or the current step
+    if (step <= currentStep && onStepClick) {
+      onStepClick(step);
+    }
+  };
+
   return (
     <div className="flex flex-col w-full my-6">
       <div className="flex items-center justify-center">
@@ -19,7 +28,12 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
           <React.Fragment key={index}>
             <div 
               className={`h-10 w-10 rounded-full flex items-center justify-center border-2 
-                ${index < currentStep ? 'bg-primary border-primary text-primary-foreground' : 'bg-background border-muted-foreground text-muted-foreground'}`}
+                ${index < currentStep ? 'bg-primary border-primary text-primary-foreground' : 'bg-background border-muted-foreground text-muted-foreground'}
+                ${index < currentStep ? 'cursor-pointer hover:opacity-80' : index === currentStep ? 'cursor-default' : 'cursor-not-allowed'}`}
+              onClick={() => handleStepClick(index + 1)}
+              role="button"
+              tabIndex={index < currentStep ? 0 : -1}
+              aria-label={`Go to step ${index + 1}`}
             >
               {index + 1}
             </div>
@@ -38,11 +52,14 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
           {stepLabels.map((label, index) => (
             <div 
               key={index} 
-              className={`text-xs font-medium ${index < currentStep ? 'text-primary' : 'text-muted-foreground'}`}
+              className={`text-xs font-medium ${index < currentStep ? 'text-primary cursor-pointer hover:underline' : 'text-muted-foreground'}`}
               style={{
                 width: `${100 / totalSteps}%`,
                 textAlign: index === 0 ? 'left' : index === totalSteps - 1 ? 'right' : 'center'
               }}
+              onClick={() => index < currentStep ? handleStepClick(index + 1) : null}
+              role={index < currentStep ? "button" : undefined}
+              tabIndex={index < currentStep ? 0 : -1}
             >
               {label}
             </div>
