@@ -133,7 +133,11 @@ const AppSidebar = () => {
                   <SidebarMenuButton 
                     isActive={isActive(item.path)}
                     onClick={() => navigate(item.path)}
-                    className="hover:bg-gray-100 transition-colors duration-200"
+                    className={`transition-colors duration-200 ${
+                      isActive(item.path)
+                        ? "bg-[#0F172A] text-white hover:bg-[#0F172A]"
+                        : "hover:bg-[#F1F5F9] text-gray-700"
+                    }`}
                   >
                     <item.icon className="w-5 h-5" />
                     <span>{item.title}</span>
@@ -153,7 +157,11 @@ const AppSidebar = () => {
                   <SidebarMenuButton 
                     isActive={isActive(item.path)}
                     onClick={() => navigate(item.path)}
-                    className="hover:bg-gray-100 transition-colors duration-200"
+                    className={`transition-colors duration-200 ${
+                      isActive(item.path)
+                        ? "bg-[#0F172A] text-white hover:bg-[#0F172A]"
+                        : "hover:bg-[#F1F5F9] text-gray-700"
+                    }`}
                   >
                     <item.icon className="w-5 h-5" />
                     <span>{item.title}</span>
@@ -176,7 +184,11 @@ const AppSidebar = () => {
                   <SidebarMenuButton 
                     isActive={isActive(item.path)}
                     onClick={() => navigate(item.path)}
-                    className="text-gray-500 hover:bg-gray-100 transition-colors duration-200"
+                    className={`transition-colors duration-200 ${
+                      isActive(item.path)
+                        ? "bg-[#0F172A] text-white hover:bg-[#0F172A]"
+                        : "hover:bg-[#F1F5F9] text-gray-700"
+                    }`}
                   >
                     <item.icon className="w-5 h-5" />
                     <span>{item.title}</span>
