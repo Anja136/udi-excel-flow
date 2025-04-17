@@ -69,7 +69,7 @@ const AppSidebar = () => {
   const bulkMaintenanceItems = [
     {
       title: "Download Data",
-      path: "/",
+      path: "/download-data",
       icon: Download,
     },
     {
@@ -164,25 +164,28 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel>User Guidance</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {guidanceItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    isActive={isActive(item.path)}
-                    onClick={() => navigate(item.path)}
-                    className="text-gray-500 hover:bg-gray-100 transition-colors duration-200"
-                  >
-                    <item.icon className="w-5 h-5" />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* Moved User Guidance to the bottom */}
+        <div className="mt-auto">
+          <SidebarGroup>
+            <SidebarGroupLabel>User Guidance</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {guidanceItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton 
+                      isActive={isActive(item.path)}
+                      onClick={() => navigate(item.path)}
+                      className="text-gray-500 hover:bg-gray-100 transition-colors duration-200"
+                    >
+                      <item.icon className="w-5 h-5" />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </div>
       </SidebarContent>
     </Sidebar>
   );
