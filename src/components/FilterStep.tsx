@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { 
   Card, 
@@ -27,14 +27,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Download, Filter, FileDown, CircleDot } from "lucide-react";
+import { Search, Download, Filter, FileDown, CircleDot, AlertCircle, Info } from "lucide-react";
 import { ConfigData } from './ConfigStep';
 import { toast } from "sonner";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface FilterStepProps {
   onPrev: () => void;
   config: ConfigData;
-  onNext: () => void;
+  onNext: (downloadableInfo?: { total: number, downloadable: number }) => void;
 }
 
 interface DeviceData {
@@ -50,6 +52,7 @@ interface DeviceData {
   deviceGroupName: string;
   srvStatus: 'started' | 'in progress' | 'completed' | 'none';
   selected: boolean;
+  isDownloadable: boolean;
 }
 
 const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
@@ -59,8 +62,15 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
   const [materialFilter, setMaterialFilter] = useState<string>("");
   const [deviceGroupFilter, setDeviceGroupFilter] = useState<string>("");
   const [srvFilter, setSrvFilter] = useState<string>("all");
-  const [devices, setDevices] = useState<DeviceData[]>(generateMockDevices());
+  const [devices, setDevices] = useState<DeviceData[]>([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [showDownloadWarning, setShowDownloadWarning] = useState(false);
+  
+  useEffect(() => {
+    // Initialize devices with downloadability status
+    const mockDevices = generateMockDevices();
+    setDevices(mockDevices);
+  }, []);
   
   // Generate mock data based on the selected authority
   function generateMockDevices(): DeviceData[] {
@@ -77,21 +87,30 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
       'started', 'in progress', 'completed', 'none'
     ];
     
-    return Array.from({ length: 20 }, (_, i) => ({
-      id: `${i + 1}`,
-      name: `Medical Device ${i + 1}`,
-      deviceIdentifier: `${prefix}${100000 + i}`,
-      manufacturerName: `MedTech Corp ${i % 3 ? "Inc." : "LLC"}`,
-      deviceModel: `Model ${String.fromCharCode(65 + (i % 26))}-${i % 10}`,
-      lastUpdated: new Date(Date.now() - i * 86400000 * (i % 10 + 1)).toISOString().split('T')[0],
-      material: `MAT-${1000 + i * 2}`,
-      materialDescription: `Medical grade material ${['A', 'B', 'C', 'D'][i % 4]}`,
-      deviceGroup: `DG-${100 + i % 5}`,
-      deviceGroupName: `${['Implantable', 'Disposable', 'Reusable', 'Electronic', 'Diagnostic'][i % 5]} Devices`,
-      srvStatus: srvStatuses[i % 4],
-      selected: false
-    }));
+    return Array.from({ length: 20 }, (_, i) => {
+      const srvStatus = srvStatuses[i % 4];
+      return {
+        id: `${i + 1}`,
+        name: `Medical Device ${i + 1}`,
+        deviceIdentifier: `${prefix}${100000 + i}`,
+        manufacturerName: `MedTech Corp ${i % 3 ? "Inc." : "LLC"}`,
+        deviceModel: `Model ${String.fromCharCode(65 + (i % 26))}-${i % 10}`,
+        lastUpdated: new Date(Date.now() - i * 86400000 * (i % 10 + 1)).toISOString().split('T')[0],
+        material: `MAT-${1000 + i * 2}`,
+        materialDescription: `Medical grade material ${['A', 'B', 'C', 'D'][i % 4]}`,
+        deviceGroup: `DG-${100 + i % 5}`,
+        deviceGroupName: `${['Implantable', 'Disposable', 'Reusable', 'Electronic', 'Diagnostic'][i % 5]} Devices`,
+        srvStatus,
+        selected: false,
+        isDownloadable: srvStatus === 'completed'
+      };
+    });
   }
+
+  // Check if a device is downloadable based on its SRV status
+  const isDeviceDownloadable = (device: DeviceData) => {
+    return device.srvStatus === 'completed';
+  };
 
   const filteredDevices = devices.filter((device) => {
     // Match search term against multiple fields
@@ -128,20 +147,42 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
            matchesDeviceGroup && matchesSrvStatus && matchesTimeFilter;
   });
   
+  useEffect(() => {
+    // Check if we need to show the warning (selected devices that aren't downloadable)
+    const selectedDevices = devices.filter(d => d.selected);
+    const nonDownloadableSelected = selectedDevices.some(d => !d.isDownloadable);
+    setShowDownloadWarning(nonDownloadableSelected && selectedDevices.length > 0);
+  }, [devices]);
+  
   const handleSelectAll = (checked: boolean) => {
     setSelectAll(checked);
     setDevices(devices.map(device => ({
       ...device,
-      selected: checked
+      // Only allow selection if device is downloadable
+      selected: checked && device.isDownloadable
     })));
   };
   
   const handleSelectDevice = (id: string, checked: boolean) => {
+    const device = devices.find(d => d.id === id);
+    
+    // If device is not downloadable, show a toast and prevent selection
+    if (device && !device.isDownloadable && checked) {
+      toast.error("Cannot select device with incomplete SRV calculation", {
+        description: "Only devices with completed SRV calculation can be downloaded"
+      });
+      return;
+    }
+    
     const updatedDevices = devices.map(device => 
       device.id === id ? { ...device, selected: checked } : device
     );
     setDevices(updatedDevices);
-    setSelectAll(updatedDevices.every(d => d.selected));
+    
+    // Update selectAll state based on whether all downloadable devices are selected
+    const allDownloadableDevices = updatedDevices.filter(d => d.isDownloadable);
+    const allDownloadableSelected = allDownloadableDevices.every(d => d.selected);
+    setSelectAll(allDownloadableSelected && allDownloadableDevices.length > 0);
   };
   
   const handleDownload = (isEmpty: boolean = false) => {
@@ -149,6 +190,10 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
       toast.error("Please select at least one device to download");
       return;
     }
+    
+    // Count selected and downloadable devices
+    const selectedDevices = devices.filter(d => d.selected);
+    const downloadableDevices = selectedDevices.filter(d => d.isDownloadable);
     
     // In a real app, this would call an API to generate the Excel file
     const authorityName = {
@@ -166,28 +211,92 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
       template4: "Package Labeling Template",
     }[config.template] || "Unknown";
     
-    const selectedCount = isEmpty ? 0 : devices.filter(d => d.selected).length;
+    const selectedCount = isEmpty ? 0 : downloadableDevices.length;
     
     toast.success(`${isEmpty ? 'Empty' : ''} Excel template downloaded${!isEmpty ? ` for ${selectedCount} devices` : ''}`, {
       description: `${authorityName} - ${templateName}`,
     });
     
-    // Proceed to next step
-    onNext();
+    // Pass downloadable device info to next step
+    onNext({
+      total: selectedDevices.length,
+      downloadable: downloadableDevices.length
+    });
   };
   
   const hasSelectedDevices = devices.some(d => d.selected);
+  const totalFilteredDevices = filteredDevices.length;
+  const downloadableFilteredDevices = filteredDevices.filter(d => d.isDownloadable).length;
 
-  const getSrvStatusIcon = (status: string) => {
+  const getSrvStatusIcon = (status: string, isDownloadable: boolean) => {
     switch(status) {
       case 'started':
-        return <CircleDot className="h-4 w-4 text-yellow-500" />;
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center">
+                  <CircleDot className="h-4 w-4 text-yellow-500" />
+                  <span className="ml-1 capitalize">Started</span>
+                  {!isDownloadable && <AlertCircle className="h-3 w-3 ml-1 text-amber-500" />}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>SRV calculation started - Not downloadable</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
       case 'in progress':
-        return <CircleDot className="h-4 w-4 text-blue-500" />;
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center">
+                  <CircleDot className="h-4 w-4 text-blue-500" />
+                  <span className="ml-1 capitalize">In Progress</span>
+                  {!isDownloadable && <AlertCircle className="h-3 w-3 ml-1 text-amber-500" />}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>SRV calculation in progress - Not downloadable</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
       case 'completed':
-        return <CircleDot className="h-4 w-4 text-green-500" />;
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center">
+                  <CircleDot className="h-4 w-4 text-green-500" />
+                  <span className="ml-1 capitalize">Completed</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>SRV calculation completed - Ready for download</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
       default:
-        return <CircleDot className="h-4 w-4 text-gray-300" />;
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center">
+                  <CircleDot className="h-4 w-4 text-gray-300" />
+                  <span className="ml-1">—</span>
+                  {!isDownloadable && <AlertCircle className="h-3 w-3 ml-1 text-amber-500" />}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>No SRV calculation - Not downloadable</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
     }
   };
   
@@ -217,6 +326,16 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
               Download Empty Sheet
             </Button>
           </div>
+          
+          {showDownloadWarning && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Some selected devices cannot be downloaded because their SRV calculation is not completed.
+                Only devices with completed SRV calculation will be included in the download.
+              </AlertDescription>
+            </Alert>
+          )}
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-4 mb-6">
@@ -305,6 +424,16 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
                 </span>
               </div>
             </div>
+            
+            <div className="flex items-center mt-2">
+              <div className="flex items-center gap-1 text-xs bg-amber-50 border border-amber-200 rounded p-1">
+                <Info className="h-3 w-3 text-amber-500" />
+                <span>Devices with incomplete SRV calculations cannot be selected for download</span>
+              </div>
+              <div className="ml-2 text-xs">
+                Downloadable devices: {downloadableFilteredDevices} of {totalFilteredDevices}
+              </div>
+            </div>
           </div>
           
           <div className="border rounded-md">
@@ -330,17 +459,37 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
               <TableBody>
                 {filteredDevices.length > 0 ? (
                   filteredDevices.map((device) => (
-                    <TableRow key={device.id}>
+                    <TableRow 
+                      key={device.id}
+                      className={!device.isDownloadable ? "opacity-60" : ""}
+                    >
                       <TableCell>
                         <Checkbox 
                           checked={device.selected} 
                           onCheckedChange={(checked) => handleSelectDevice(device.id, !!checked)}
                           id={`device-${device.id}`}
+                          disabled={!device.isDownloadable}
                         />
                       </TableCell>
                       <TableCell>
-                        <div>{device.name}</div>
-                        <div className="text-xs text-muted-foreground">{device.deviceModel}</div>
+                        <div className="flex items-center">
+                          <div>
+                            <div>{device.name}</div>
+                            <div className="text-xs text-muted-foreground">{device.deviceModel}</div>
+                          </div>
+                          {!device.isDownloadable && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <AlertCircle className="h-4 w-4 ml-2 text-amber-500" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>This device is not downloadable</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>{device.deviceIdentifier}</TableCell>
                       <TableCell>
@@ -354,8 +503,7 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
                       <TableCell>{device.manufacturerName}</TableCell>
                       <TableCell>
                         <div className="flex items-center">
-                          {getSrvStatusIcon(device.srvStatus)}
-                          <span className="ml-1 capitalize">{device.srvStatus === 'none' ? '—' : device.srvStatus}</span>
+                          {getSrvStatusIcon(device.srvStatus, device.isDownloadable)}
                         </div>
                       </TableCell>
                       <TableCell>{device.lastUpdated}</TableCell>
@@ -376,7 +524,7 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
           <Button variant="outline" onClick={onPrev}>
             Previous Step
           </Button>
-          <Button onClick={onNext}>
+          <Button onClick={() => onNext()}>
             Next Step
           </Button>
         </CardFooter>

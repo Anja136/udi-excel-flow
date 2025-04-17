@@ -18,6 +18,7 @@ const Index = () => {
     template: '',
     dataSource: ''
   });
+  const [downloadableInfo, setDownloadableInfo] = useState<{ total: number, downloadable: number } | undefined>();
   
   const navigate = useNavigate();
   const { downloadHistory, addDownloadRecord } = useDownloadHistory();
@@ -34,7 +35,10 @@ const Index = () => {
     setConfig(newConfig);
   };
 
-  const goToNext = () => {
+  const goToNext = (info?: { total: number, downloadable: number }) => {
+    if (info) {
+      setDownloadableInfo(info);
+    }
     const nextStep = Math.min(currentStep + 1, totalSteps);
     setCurrentStep(nextStep);
     updateVisitedSteps(nextStep);
@@ -107,6 +111,7 @@ const Index = () => {
           onDownload={handleDownload}
           hasDownloadHistory={downloadHistory.length > 0}
           onViewHistory={viewDownloadHistory}
+          downloadableInfo={downloadableInfo}
         />
       )}
       
