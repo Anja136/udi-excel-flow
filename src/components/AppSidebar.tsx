@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { LayoutDashboard, HardDrive, FileDown, History, Upload, Send, Download, FileText, BarChart3, Clock, Settings, HelpCircle, BookOpen, Star, Bell } from "lucide-react";
+import { LayoutDashboard, HardDrive, FileDown, History, Upload, Send, Download, FileText, BarChart3, Clock, Settings, HelpCircle, BookOpen, Star, Bell, User } from "lucide-react";
+
 const AppSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const mainMenuItems = [{
     title: "Dashboard",
     path: "/dashboard",
@@ -25,11 +27,8 @@ const AppSidebar = () => {
     title: "Audit Log",
     path: "/audit",
     icon: Clock
-  }, {
-    title: "Settings",
-    path: "/settings",
-    icon: Settings
   }];
+
   const bulkMaintenanceItems = [{
     title: "Download Data",
     path: "/download-data",
@@ -47,6 +46,7 @@ const AppSidebar = () => {
     path: "/submit",
     icon: Send
   }];
+
   const guidanceItems = [{
     title: "Getting Started",
     path: "/getting-started",
@@ -59,14 +59,26 @@ const AppSidebar = () => {
     title: "User Guide",
     path: "/user-guide",
     icon: BookOpen
+  }];
+
+  const userSettingsItems = [{
+    title: "User Profile",
+    path: "/profile",
+    icon: User
+  }, {
+    title: "Settings",
+    path: "/settings",
+    icon: Settings
   }, {
     title: "Trust Center",
     path: "/trust-center",
     icon: Star
   }];
+
   const isActive = (path: string) => {
     return location.pathname === path;
   };
+
   const renderMenuItems = (items: typeof mainMenuItems) => <SidebarMenu>
       {items.map(item => <SidebarMenuItem key={item.title}>
           <SidebarMenuButton isActive={isActive(item.path)} onClick={() => navigate(item.path)} style={isActive(item.path) ? {
@@ -79,6 +91,7 @@ const AppSidebar = () => {
           </SidebarMenuButton>
         </SidebarMenuItem>)}
     </SidebarMenu>;
+
   return <Sidebar className="border-r border-gray-200">
       <SidebarContent>
         <div className="p-4 border-b border-gray-200">
@@ -99,15 +112,21 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <div className="flex-grow"></div>
-
-        <SidebarGroup className="mt-auto">
+        <SidebarGroup>
           <SidebarGroupLabel>User Guidance</SidebarGroupLabel>
           <SidebarGroupContent>
             {renderMenuItems(guidanceItems)}
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>User Settings</SidebarGroupLabel>
+          <SidebarGroupContent>
+            {renderMenuItems(userSettingsItems)}
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>;
 };
+
 export default AppSidebar;
