@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 import Hub from "@/pages/Hub";
 import Report from "@/pages/Report";
@@ -11,7 +11,8 @@ import NotFound from "@/pages/NotFound";
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Index />} />
+      <Route path="/" element={<Navigate to="/download-data" replace />} />
+      <Route path="/download-data" element={<Index />} />
       <Route path="/hub" element={<Hub />} />
       <Route path="/report" element={<Report />} />
       <Route path="/download-history" element={<DownloadHistory />} />
