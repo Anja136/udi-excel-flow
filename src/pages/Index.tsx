@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StepIndicator from '@/components/StepIndicator';
@@ -6,8 +5,7 @@ import ConfigStep, { ConfigData } from '@/components/ConfigStep';
 import FilterStep from '@/components/FilterStep';
 import { Toaster } from '@/components/ui/sonner';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, FileDown, History } from 'lucide-react';
+import { History } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface DownloadRecord {
@@ -33,7 +31,6 @@ const Index = () => {
   
   const navigate = useNavigate();
 
-  // Save download history to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('downloadHistory', JSON.stringify(downloadHistory));
   }, [downloadHistory]);
@@ -72,7 +69,6 @@ const Index = () => {
   };
 
   const handleDownload = (isEmpty: boolean = false) => {
-    // In a real app, this would call an API to generate the Excel file
     const authorityName = {
       fda: "FDA",
       ema: "EMA",
@@ -92,7 +88,6 @@ const Index = () => {
       description: `${authorityName} - ${templateName}`,
     });
     
-    // Add to download history (limit to 20 items)
     const newDownload: DownloadRecord = {
       id: Date.now().toString(),
       authority: config.authority,
@@ -106,7 +101,6 @@ const Index = () => {
       return updatedHistory;
     });
     
-    // Automatically go to step 3 after download
     goToStep(3);
   };
 
@@ -184,44 +178,16 @@ const Index = () => {
           </div>
 
           {downloadHistory.length > 0 && (
-            <Card className="mt-6 bg-muted/30">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center">
-                  <History className="h-4 w-4 mr-2" />
-                  Recent Downloads
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {downloadHistory.slice(0, 3).map((record) => (
-                    <div key={record.id} className="flex justify-between items-center p-2 bg-background rounded border">
-                      <div>
-                        <div className="font-medium">{record.authority.toUpperCase()} - {record.template}</div>
-                        <div className="text-xs text-muted-foreground">{record.date}</div>
-                      </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => handleDownload(record.isEmpty)}
-                      >
-                        <Download className="h-3.5 w-3.5 mr-1" />
-                        <span>Download</span>
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                {downloadHistory.length > 3 && (
-                  <Button 
-                    variant="ghost" 
-                    className="w-full mt-2" 
-                    size="sm"
-                    onClick={viewDownloadHistory}
-                  >
-                    View all {downloadHistory.length} downloads
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
+            <div className="mt-6 text-center">
+              <Button 
+                variant="outline" 
+                onClick={viewDownloadHistory}
+                className="w-full"
+              >
+                <History className="h-4 w-4 mr-2" />
+                Go to Recent Downloads
+              </Button>
+            </div>
           )}
         </div>
       )}
