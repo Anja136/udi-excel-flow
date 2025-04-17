@@ -62,8 +62,9 @@ const AppSidebar = () => {
                     isActive={isActive(item.path)}
                     tooltip={item.title}
                     onClick={() => navigate(item.path)}
+                    className="hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
                   >
-                    <item.icon className="mr-2" />
+                    <item.icon className="mr-2 h-5 w-5" />
                     <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
