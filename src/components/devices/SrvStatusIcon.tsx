@@ -18,7 +18,6 @@ export const SrvStatusIcon = ({ status, isDownloadable }: SrvStatusIconProps) =>
               <div className="flex items-center">
                 <CircleDot className="h-4 w-4 text-yellow-500" />
                 <span className="ml-1 capitalize">Started</span>
-                {!isDownloadable && <AlertCircle className="h-3 w-3 ml-1 text-amber-500" />}
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -35,7 +34,6 @@ export const SrvStatusIcon = ({ status, isDownloadable }: SrvStatusIconProps) =>
               <div className="flex items-center">
                 <CircleDot className="h-4 w-4 text-blue-500" />
                 <span className="ml-1 capitalize">In Progress</span>
-                {!isDownloadable && <AlertCircle className="h-3 w-3 ml-1 text-amber-500" />}
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -68,7 +66,6 @@ export const SrvStatusIcon = ({ status, isDownloadable }: SrvStatusIconProps) =>
               <div className="flex items-center">
                 <CircleDot className="h-4 w-4 text-gray-300" />
                 <span className="ml-1">—</span>
-                {!isDownloadable && <AlertCircle className="h-3 w-3 ml-1 text-amber-500" />}
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -79,3 +76,4 @@ export const SrvStatusIcon = ({ status, isDownloadable }: SrvStatusIconProps) =>
       );
   }
 };
+
