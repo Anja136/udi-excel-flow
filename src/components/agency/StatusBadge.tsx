@@ -1,14 +1,17 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type StatusBadgeProps = {
   label: string;
   count: number;
   className?: string;
+  agency?: string;
 };
 
-const StatusBadge = ({ label, count, className = '' }: StatusBadgeProps) => {
-  const baseClasses = "px-4 py-2 rounded-md flex items-center justify-between gap-2";
+const StatusBadge = ({ label, count, className = '', agency }: StatusBadgeProps) => {
+  const navigate = useNavigate();
+  const baseClasses = "px-4 py-2 rounded-md flex items-center justify-between gap-2 cursor-pointer hover:opacity-80 transition-opacity";
   
   // Get color classes and tooltip based on status label
   const getStatusInfo = (label: string) => {
@@ -43,10 +46,20 @@ const StatusBadge = ({ label, count, className = '' }: StatusBadgeProps) => {
 
   const statusInfo = getStatusInfo(label);
 
+  const handleClick = () => {
+    const params = new URLSearchParams();
+    if (agency) params.set('agency', agency);
+    params.set('status', label);
+    navigate(`/devices?${params.toString()}`);
+  };
+
   return (
     <div 
       className={`${baseClasses} ${statusInfo.colorClasses} ${className}`}
       title={statusInfo.tooltip}
+      onClick={handleClick}
+      role="button"
+      tabIndex={0}
     >
       <span className="font-medium">{label}</span>
       <span className="font-bold">{count}</span>

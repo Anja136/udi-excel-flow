@@ -1,38 +1,44 @@
 
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { DeviceStatusBadge } from "@/components/devices/DeviceStatusBadge";
 import { mockDeviceData } from '@/data/mockDeviceData';
 
-// Ordered agencies with All Devices first, then in the specified order
 const allAgencies = ["All Devices", "GUDID", "EUDAMED", "CUDID", "IMDIS", "Saudi-DI", "TUDID", "AusUDID"];
-
-// Agencies that the user doesn't have access to
 const inaccessibleAgencies = ["CUDID", "Saudi-DI"];
 
 export const DeviceStatusCockpit = () => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const [searchParams, setSearchParams] = useSearchParams();
   const initialAgency = searchParams.get('agency') || "All Devices";
+  const initialStatus = searchParams.get('status');
   
   const [selectedAgency, setSelectedAgency] = useState(initialAgency);
+
+  const handleAgencyChange = (value: string) => {
+    setSelectedAgency(value);
+    setSearchParams(params => {
+      params.set('agency', value);
+      return params;
+    });
+  };
 
   // Check if the selected agency is accessible
   const isAgencyAccessible = selectedAgency === "All Devices" || !inaccessibleAgencies.includes(selectedAgency);
 
-  // Update filtered devices based on selected agency
-  const filteredDevices = selectedAgency === "All Devices" 
-    ? mockDeviceData
-    : mockDeviceData.filter(device => device.agencies.includes(selectedAgency));
+  // Update filtered devices based on selected agency and status
+  const filteredDevices = mockDeviceData
+    .filter(device => selectedAgency === "All Devices" ? true : device.agencies.includes(selectedAgency))
+    .filter(device => initialStatus ? device.status === initialStatus : true);
 
   return (
     <div className="container mx-auto py-6">
       <h1 className="text-2xl font-bold mb-6">Device Overview</h1>
       
       <div className="bg-card rounded-lg p-6">
-        <Tabs value={selectedAgency} onValueChange={setSelectedAgency} className="mb-6">
+        <Tabs value={selectedAgency} onValueChange={handleAgencyChange} className="mb-6">
           <TabsList className="flex flex-wrap">
             {allAgencies.map(agency => (
               <TabsTrigger key={agency} value={agency}>

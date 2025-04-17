@@ -43,10 +43,10 @@ const AgencyCard = ({ agency }: { agency: Agency }) => {
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <StatusBadge label="Created" count={agency.status.created} />
-            <StatusBadge label="Processed" count={agency.status.processed} />
-            <StatusBadge label="Submitted" count={agency.status.submitted} />
-            <StatusBadge label="Needs Update" count={agency.status.needsUpdate} />
+            <StatusBadge label="Created" count={agency.status.created} agency={agency.shortName} />
+            <StatusBadge label="Processed" count={agency.status.processed} agency={agency.shortName} />
+            <StatusBadge label="Submitted" count={agency.status.submitted} agency={agency.shortName} />
+            <StatusBadge label="Needs Update" count={agency.status.needsUpdate} agency={agency.shortName} />
           </div>
         </>
       ) : (
