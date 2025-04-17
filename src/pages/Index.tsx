@@ -1,21 +1,14 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StepIndicator from '@/components/StepIndicator';
 import ConfigStep, { ConfigData } from '@/components/ConfigStep';
 import FilterStep from '@/components/FilterStep';
+import DownloadStep from '@/components/DownloadStep';
 import { Toaster } from '@/components/ui/sonner';
 import { Button } from '@/components/ui/button';
-import { History, Download, FileDown } from 'lucide-react';
-import { toast } from 'sonner';
-
-interface DownloadRecord {
-  id: string;
-  authority: string;
-  template: string;
-  date: string;
-  isEmpty: boolean;
-}
+import { History } from 'lucide-react';
+import { useDownloadHistory } from '@/hooks/useDownloadHistory';
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -25,16 +18,9 @@ const Index = () => {
     template: '',
     dataSource: ''
   });
-  const [downloadHistory, setDownloadHistory] = useState<DownloadRecord[]>(() => {
-    const storedHistory = localStorage.getItem('downloadHistory');
-    return storedHistory ? JSON.parse(storedHistory) : [];
-  });
   
   const navigate = useNavigate();
-
-  useEffect(() => {
-    localStorage.setItem('downloadHistory', JSON.stringify(downloadHistory));
-  }, [downloadHistory]);
+  const { downloadHistory, addDownloadRecord } = useDownloadHistory();
 
   const stepLabels = [
     "Select Sheet",
@@ -70,38 +56,7 @@ const Index = () => {
   };
 
   const handleDownload = (isEmpty: boolean = false) => {
-    const authorityName = {
-      fda: "FDA",
-      ema: "EMA",
-      pmda: "PMDA",
-      anvisa: "ANVISA",
-      nmpa: "NMPA",
-    }[config.authority] || "Unknown";
-    
-    const templateName = {
-      template1: "UDI-DI Template",
-      template2: "Basic Device Information",
-      template3: "Full Device Details",
-      template4: "Package Labeling Template",
-    }[config.template] || "Unknown";
-    
-    toast.success(`${isEmpty ? 'Empty' : ''} Excel template downloaded`, {
-      description: `${authorityName} - ${templateName}`,
-    });
-    
-    const newDownload: DownloadRecord = {
-      id: Date.now().toString(),
-      authority: config.authority,
-      template: config.template,
-      date: new Date().toLocaleDateString(),
-      isEmpty
-    };
-    
-    setDownloadHistory(prev => {
-      const updatedHistory = [newDownload, ...prev].slice(0, 20);
-      return updatedHistory;
-    });
-    
+    addDownloadRecord(config, isEmpty);
     goToStep(3);
   };
 
@@ -146,51 +101,13 @@ const Index = () => {
       )}
       
       {currentStep === 3 && (
-        <div className="bg-card p-6 rounded-lg border border-border shadow-sm">
-          <h2 className="text-xl font-medium mb-4">Download UDI Data</h2>
-          <p className="mb-4">Your UDI data is ready for download.</p>
-          <div className="mb-4">
-            <p className="font-medium">Configuration:</p>
-            <ul className="list-disc pl-5 mt-2">
-              <li>Authority: {config.authority.toUpperCase()}</li>
-              <li>Template: {config.template}</li>
-              <li>Selected Devices: {currentStep === 3 ? "Ready to download" : "None selected"}</li>
-            </ul>
-          </div>
-          
-          <div className="flex flex-wrap gap-3 mb-6">
-            <Button onClick={() => handleDownload(false)}>
-              <Download className="h-4 w-4 mr-2" />
-              Download Excel Template
-            </Button>
-            <Button variant="outline" onClick={() => handleDownload(true)}>
-              <FileDown className="h-4 w-4 mr-2" />
-              Download Empty Sheet
-            </Button>
-          </div>
-          
-          <div className="flex justify-between mt-6">
-            <Button variant="outline" onClick={() => goToStep(2)}>
-              Back to Select Devices
-            </Button>
-            <Button variant="outline" onClick={() => goToStep(1)}>
-              Back to Select Sheet
-            </Button>
-          </div>
-
-          {downloadHistory.length > 0 && (
-            <div className="mt-6 text-center">
-              <Button 
-                variant="outline" 
-                onClick={viewDownloadHistory}
-                className="w-full"
-              >
-                <History className="h-4 w-4 mr-2" />
-                Go to Recent Downloads
-              </Button>
-            </div>
-          )}
-        </div>
+        <DownloadStep 
+          config={config}
+          onPrevStep={goToStep}
+          onDownload={handleDownload}
+          hasDownloadHistory={downloadHistory.length > 0}
+          onViewHistory={viewDownloadHistory}
+        />
       )}
       
       <Toaster />
