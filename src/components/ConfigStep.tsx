@@ -28,7 +28,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Save } from "lucide-react";
+import { Save, Settings2 } from "lucide-react";
 
 export interface ConfigData {
   authority: string;
@@ -52,6 +52,8 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
   const [savedProcesses, setSavedProcesses] = useState<Process[]>([]);
   const [newProcessName, setNewProcessName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedProcess, setSelectedProcess] = useState<string>("");
+  const [showDetailConfig, setShowDetailConfig] = useState(true);
   
   // Simulated data - in a real app, this would come from an API
   const authorities = [
@@ -84,10 +86,51 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
     }
   }, []);
 
+  // Effect to check if current config matches a saved process
+  useEffect(() => {
+    if (savedProcesses.length > 0) {
+      const matchingProcess = savedProcesses.find(
+        process => 
+          process.authority === selectedConfig.authority && 
+          process.template === selectedConfig.template && 
+          process.dataSource === selectedConfig.dataSource
+      );
+      
+      if (matchingProcess) {
+        setSelectedProcess(matchingProcess.id);
+      } else {
+        setSelectedProcess("");
+      }
+    }
+  }, [selectedConfig, savedProcesses]);
+
   const handleChange = (field: keyof ConfigData, value: string) => {
+    // If a process was selected, deselect it when changing parameters
+    if (selectedProcess) {
+      setSelectedProcess("");
+    }
+    
     const updated = { ...selectedConfig, [field]: value };
     setSelectedConfig(updated);
     onConfigChange(updated);
+  };
+
+  const handleProcessSelect = (processId: string) => {
+    if (processId === "configure") {
+      setSelectedProcess("");
+      setShowDetailConfig(true);
+      return;
+    }
+    
+    const selectedProc = savedProcesses.find(p => p.id === processId);
+    if (selectedProc) {
+      const { authority, template, dataSource } = selectedProc;
+      const updatedConfig = { authority, template, dataSource };
+      setSelectedConfig(updatedConfig);
+      onConfigChange(updatedConfig);
+      setSelectedProcess(processId);
+      setShowDetailConfig(false);
+    }
   };
 
   const saveProcess = () => {
@@ -107,13 +150,9 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
     localStorage.setItem('udi-saved-processes', JSON.stringify(updatedProcesses));
     setDialogOpen(false);
     setNewProcessName("");
+    setSelectedProcess(newProcess.id);
+    setShowDetailConfig(false);
     toast.success("Process saved successfully");
-  };
-
-  const loadProcess = (process: Process) => {
-    setSelectedConfig(process);
-    onConfigChange(process);
-    toast.success(`Loaded process: ${process.name}`);
   };
 
   return (
@@ -122,83 +161,109 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
         <CardHeader>
           <CardTitle>Configure Download Parameters</CardTitle>
           <CardDescription>
-            Select the regulatory authority and template options for your UDI data
+            Select a saved process or configure new download parameters
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
+          {/* Saved Processes Dropdown */}
           <div className="space-y-2">
-            <Label htmlFor="authority">Regulatory Authority</Label>
+            <Label htmlFor="savedProcess">Saved Processes</Label>
             <Select 
-              value={selectedConfig.authority} 
-              onValueChange={(value) => handleChange('authority', value)}
+              value={selectedProcess} 
+              onValueChange={handleProcessSelect}
             >
-              <SelectTrigger id="authority">
-                <SelectValue placeholder="Select Authority" />
+              <SelectTrigger id="savedProcess">
+                <SelectValue placeholder="Select a saved process" />
               </SelectTrigger>
               <SelectContent>
-                {authorities.map(authority => (
-                  <SelectItem key={authority.id} value={authority.id}>
-                    {authority.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="template">Excel Template</Label>
-            <Select 
-              value={selectedConfig.template} 
-              onValueChange={(value) => handleChange('template', value)}
-            >
-              <SelectTrigger id="template">
-                <SelectValue placeholder="Select Template" />
-              </SelectTrigger>
-              <SelectContent>
-                {templates.map(template => (
-                  <SelectItem key={template.id} value={template.id}>
-                    {template.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="dataSource">Data Source</Label>
-            <Select 
-              value={selectedConfig.dataSource} 
-              onValueChange={(value) => handleChange('dataSource', value)}
-            >
-              <SelectTrigger id="dataSource">
-                <SelectValue placeholder="Select Data Source" />
-              </SelectTrigger>
-              <SelectContent>
-                {dataSources.map(source => (
-                  <SelectItem key={source.id} value={source.id}>
-                    {source.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {savedProcesses.length > 0 && (
-            <div className="mt-6">
-              <h3 className="text-sm font-medium mb-2">Saved Processes</h3>
-              <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto">
                 {savedProcesses.map(process => (
-                  <Button 
-                    key={process.id} 
-                    variant="outline" 
-                    className="justify-start text-left h-auto py-2"
-                    onClick={() => loadProcess(process)}
-                  >
-                    <span className="truncate">{process.name}</span>
-                  </Button>
+                  <SelectItem key={process.id} value={process.id}>
+                    {process.name}
+                  </SelectItem>
                 ))}
-              </div>
+                {selectedProcess && (
+                  <SelectItem value="configure">
+                    Configure New Parameters
+                  </SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Toggle to show configuration */}
+          {selectedProcess && !showDetailConfig && (
+            <div className="flex justify-center">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowDetailConfig(true)}
+                className="flex items-center gap-2"
+              >
+                <Settings2 className="h-4 w-4" />
+                Configure Parameters
+              </Button>
             </div>
+          )}
+
+          {/* Configuration Parameters */}
+          {(showDetailConfig || !selectedProcess) && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="authority">Regulatory Authority</Label>
+                <Select 
+                  value={selectedConfig.authority} 
+                  onValueChange={(value) => handleChange('authority', value)}
+                >
+                  <SelectTrigger id="authority">
+                    <SelectValue placeholder="Select Authority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {authorities.map(authority => (
+                      <SelectItem key={authority.id} value={authority.id}>
+                        {authority.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="template">Excel Template</Label>
+                <Select 
+                  value={selectedConfig.template} 
+                  onValueChange={(value) => handleChange('template', value)}
+                >
+                  <SelectTrigger id="template">
+                    <SelectValue placeholder="Select Template" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {templates.map(template => (
+                      <SelectItem key={template.id} value={template.id}>
+                        {template.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="dataSource">Data Source</Label>
+                <Select 
+                  value={selectedConfig.dataSource} 
+                  onValueChange={(value) => handleChange('dataSource', value)}
+                >
+                  <SelectTrigger id="dataSource">
+                    <SelectValue placeholder="Select Data Source" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dataSources.map(source => (
+                      <SelectItem key={source.id} value={source.id}>
+                        {source.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </>
           )}
         </CardContent>
         <CardFooter className="flex justify-between">

@@ -6,17 +6,19 @@ interface StepIndicatorProps {
   totalSteps: number;
   stepLabels?: string[];
   onStepClick?: (step: number) => void;
+  visitedSteps?: number[];
 }
 
 const StepIndicator: React.FC<StepIndicatorProps> = ({ 
   currentStep, 
   totalSteps,
   stepLabels = [],
-  onStepClick
+  onStepClick,
+  visitedSteps = []
 }) => {
   const handleStepClick = (step: number) => {
-    // Only allow clicking on previous steps or the current step
-    if (step <= currentStep && onStepClick) {
+    // Allow clicking on previous steps, current step, or previously visited steps
+    if ((step <= currentStep || visitedSteps.includes(step)) && onStepClick) {
       onStepClick(step);
     }
   };
@@ -24,46 +26,58 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
   return (
     <div className="flex flex-col w-full my-6">
       <div className="flex items-center justify-center">
-        {Array.from({ length: totalSteps }).map((_, index) => (
-          <React.Fragment key={index}>
-            <div 
-              className={`h-10 w-10 rounded-full flex items-center justify-center border-2 
-                ${index < currentStep ? 'bg-primary border-primary text-primary-foreground' : 'bg-background border-muted-foreground text-muted-foreground'}
-                ${index < currentStep ? 'cursor-pointer hover:opacity-80' : index === currentStep ? 'cursor-default' : 'cursor-not-allowed'}`}
-              onClick={() => handleStepClick(index + 1)}
-              role="button"
-              tabIndex={index < currentStep ? 0 : -1}
-              aria-label={`Go to step ${index + 1}`}
-            >
-              {index + 1}
-            </div>
-            {index < totalSteps - 1 && (
+        {Array.from({ length: totalSteps }).map((_, index) => {
+          const stepNumber = index + 1;
+          const isVisited = visitedSteps.includes(stepNumber) || index < currentStep;
+          const isClickable = stepNumber <= currentStep || visitedSteps.includes(stepNumber);
+          
+          return (
+            <React.Fragment key={index}>
               <div 
-                className={`h-1 flex-1 mx-2 
-                  ${index < currentStep - 1 ? 'bg-primary' : 'bg-muted-foreground'}`}
-              />
-            )}
-          </React.Fragment>
-        ))}
+                className={`h-10 w-10 rounded-full flex items-center justify-center border-2 
+                  ${isVisited ? 'bg-primary border-primary text-primary-foreground' : 'bg-background border-muted-foreground text-muted-foreground'}
+                  ${isClickable ? 'cursor-pointer hover:opacity-80' : 'cursor-not-allowed'}`}
+                onClick={() => handleStepClick(stepNumber)}
+                role="button"
+                tabIndex={isClickable ? 0 : -1}
+                aria-label={`Go to step ${stepNumber}`}
+              >
+                {stepNumber}
+              </div>
+              {index < totalSteps - 1 && (
+                <div 
+                  className={`h-1 flex-1 mx-2 
+                    ${index < currentStep - 1 ? 'bg-primary' : 'bg-muted-foreground'}`}
+                />
+              )}
+            </React.Fragment>
+          );
+        })}
       </div>
       
       {stepLabels.length > 0 && (
         <div className="flex items-center justify-between mt-2 px-2">
-          {stepLabels.map((label, index) => (
-            <div 
-              key={index} 
-              className={`text-xs font-medium ${index < currentStep ? 'text-primary cursor-pointer hover:underline' : 'text-muted-foreground'}`}
-              style={{
-                width: `${100 / totalSteps}%`,
-                textAlign: index === 0 ? 'left' : index === totalSteps - 1 ? 'right' : 'center'
-              }}
-              onClick={() => index < currentStep ? handleStepClick(index + 1) : null}
-              role={index < currentStep ? "button" : undefined}
-              tabIndex={index < currentStep ? 0 : -1}
-            >
-              {label}
-            </div>
-          ))}
+          {stepLabels.map((label, index) => {
+            const stepNumber = index + 1;
+            const isVisited = visitedSteps.includes(stepNumber) || index < currentStep;
+            const isClickable = stepNumber <= currentStep || visitedSteps.includes(stepNumber);
+            
+            return (
+              <div 
+                key={index} 
+                className={`text-xs font-medium ${isVisited ? 'text-primary cursor-pointer hover:underline' : 'text-muted-foreground'}`}
+                style={{
+                  width: `${100 / totalSteps}%`,
+                  textAlign: index === 0 ? 'left' : index === totalSteps - 1 ? 'right' : 'center'
+                }}
+                onClick={() => isClickable ? handleStepClick(stepNumber) : null}
+                role={isClickable ? "button" : undefined}
+                tabIndex={isClickable ? 0 : -1}
+              >
+                {label}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

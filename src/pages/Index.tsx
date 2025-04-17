@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import StepIndicator from '@/components/StepIndicator';
 import ConfigStep, { ConfigData } from '@/components/ConfigStep';
 import FilterStep from '@/components/FilterStep';
@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [visitedSteps, setVisitedSteps] = useState<number[]>([1]);
   const [config, setConfig] = useState<ConfigData>({
     authority: '',
     template: '',
@@ -29,7 +30,9 @@ const Index = () => {
   };
 
   const goToNext = () => {
-    setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+    const nextStep = Math.min(currentStep + 1, totalSteps);
+    setCurrentStep(nextStep);
+    updateVisitedSteps(nextStep);
   };
 
   const goToPrev = () => {
@@ -38,6 +41,13 @@ const Index = () => {
 
   const goToStep = (step: number) => {
     setCurrentStep(Math.max(1, Math.min(step, totalSteps)));
+    updateVisitedSteps(step);
+  };
+
+  const updateVisitedSteps = (step: number) => {
+    if (!visitedSteps.includes(step)) {
+      setVisitedSteps(prev => [...prev, step]);
+    }
   };
 
   const handleDownload = (isEmpty: boolean = false) => {
@@ -60,6 +70,9 @@ const Index = () => {
     toast.success(`${isEmpty ? 'Empty' : ''} Excel template downloaded`, {
       description: `${authorityName} - ${templateName}`,
     });
+    
+    // Automatically go to step 3 after download
+    goToStep(3);
   };
 
   return (
@@ -71,6 +84,7 @@ const Index = () => {
         totalSteps={totalSteps} 
         stepLabels={stepLabels}
         onStepClick={goToStep}
+        visitedSteps={visitedSteps}
       />
       
       {currentStep === 1 && (
@@ -82,11 +96,24 @@ const Index = () => {
       )}
       
       {currentStep === 2 && (
-        <FilterStep 
-          onPrev={goToPrev}
-          onNext={goToNext} 
-          config={config}
-        />
+        <>
+          <div className="flex justify-center gap-3 mb-6">
+            <Button onClick={() => handleDownload(false)}>
+              <Download className="h-4 w-4 mr-2" />
+              Download Excel Template
+            </Button>
+            <Button variant="outline" onClick={() => handleDownload(true)}>
+              <FileDown className="h-4 w-4 mr-2" />
+              Download Empty Sheet
+            </Button>
+          </div>
+          
+          <FilterStep 
+            onPrev={goToPrev}
+            onNext={goToNext} 
+            config={config}
+          />
+        </>
       )}
       
       {currentStep === 3 && (
