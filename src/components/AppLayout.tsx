@@ -11,13 +11,14 @@ interface AppLayoutProps {
 const AppLayout = ({ children }: AppLayoutProps) => {
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
-      <div className="h-16 w-full absolute top-0 z-40 bg-primary"></div> {/* Background for header */}
-      <Header />
-      <div className="flex w-full pt-16"> {/* Content area with padding top for header */}
+      <div className="flex w-full">
         <AppSidebar />
-        <SidebarInset>
-          {children}
-        </SidebarInset>
+        <div className="flex flex-col flex-1">
+          <Header />
+          <main className="flex-1">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   );
