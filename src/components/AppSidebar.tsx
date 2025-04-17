@@ -8,7 +8,7 @@ const AppSidebar = () => {
   const location = useLocation();
 
   const mainMenuItems = [{
-    title: "Agency Status Hub",
+    title: "Agency Hub",
     path: "/dashboard",
     icon: LayoutDashboard
   }, {
