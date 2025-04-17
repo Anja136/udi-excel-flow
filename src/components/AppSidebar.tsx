@@ -133,11 +133,9 @@ const AppSidebar = () => {
                   <SidebarMenuButton 
                     isActive={isActive(item.path)}
                     onClick={() => navigate(item.path)}
-                    className={`transition-colors duration-200 ${
-                      isActive(item.path)
-                        ? "bg-[#0F172A] text-white hover:bg-[#0F172A]"
-                        : "hover:bg-[#F1F5F9] text-gray-700"
-                    }`}
+                    className={isActive(item.path) 
+                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"}
                   >
                     <item.icon className="w-5 h-5" />
                     <span>{item.title}</span>
@@ -157,11 +155,9 @@ const AppSidebar = () => {
                   <SidebarMenuButton 
                     isActive={isActive(item.path)}
                     onClick={() => navigate(item.path)}
-                    className={`transition-colors duration-200 ${
-                      isActive(item.path)
-                        ? "bg-[#0F172A] text-white hover:bg-[#0F172A]"
-                        : "hover:bg-[#F1F5F9] text-gray-700"
-                    }`}
+                    className={isActive(item.path) 
+                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"}
                   >
                     <item.icon className="w-5 h-5" />
                     <span>{item.title}</span>
@@ -184,11 +180,9 @@ const AppSidebar = () => {
                   <SidebarMenuButton 
                     isActive={isActive(item.path)}
                     onClick={() => navigate(item.path)}
-                    className={`transition-colors duration-200 ${
-                      isActive(item.path)
-                        ? "bg-[#0F172A] text-white hover:bg-[#0F172A]"
-                        : "hover:bg-[#F1F5F9] text-gray-700"
-                    }`}
+                    className={isActive(item.path) 
+                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"}
                   >
                     <item.icon className="w-5 h-5" />
                     <span>{item.title}</span>
