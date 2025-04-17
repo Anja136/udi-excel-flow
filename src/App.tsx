@@ -10,6 +10,7 @@ import Header from "@/components/Header";
 import Index from "./pages/Index";
 import Hub from "./pages/Hub";
 import Report from "./pages/Report";
+import DownloadHistory from "./pages/DownloadHistory";
 import Placeholder from "./pages/Placeholder";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +32,7 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/hub" element={<Hub />} />
                   <Route path="/report" element={<Report />} />
+                  <Route path="/download-history" element={<DownloadHistory />} />
                   <Route path="/upload-data" element={<Placeholder />} />
                   <Route path="/submit" element={<Placeholder />} />
                   <Route path="/handbook" element={<Placeholder />} />

@@ -29,13 +29,16 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
         {Array.from({ length: totalSteps }).map((_, index) => {
           const stepNumber = index + 1;
           const isVisited = visitedSteps.includes(stepNumber) || index < currentStep;
+          const isActive = stepNumber === currentStep;
           const isClickable = stepNumber <= currentStep || visitedSteps.includes(stepNumber);
           
           return (
             <React.Fragment key={index}>
               <div 
-                className={`h-10 w-10 rounded-full flex items-center justify-center border-2 
-                  ${isVisited ? 'bg-primary border-primary text-primary-foreground' : 'bg-background border-muted-foreground text-muted-foreground'}
+                className={`h-10 w-10 rounded-full flex items-center justify-center border-2 transition-all
+                  ${isActive ? 'bg-primary border-primary text-primary-foreground ring-4 ring-primary/20' : 
+                    isVisited ? 'bg-primary border-primary text-primary-foreground' : 
+                    'bg-background border-muted-foreground text-muted-foreground'}
                   ${isClickable ? 'cursor-pointer hover:opacity-80' : 'cursor-not-allowed'}`}
                 onClick={() => handleStepClick(stepNumber)}
                 role="button"
@@ -46,7 +49,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
               </div>
               {index < totalSteps - 1 && (
                 <div 
-                  className={`h-1 flex-1 mx-2 
+                  className={`h-1 flex-1 mx-2 transition-colors
                     ${index < currentStep - 1 ? 'bg-primary' : 'bg-muted-foreground'}`}
                 />
               )}
@@ -59,13 +62,17 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
         <div className="flex items-center justify-between mt-2 px-2">
           {stepLabels.map((label, index) => {
             const stepNumber = index + 1;
+            const isActive = stepNumber === currentStep;
             const isVisited = visitedSteps.includes(stepNumber) || index < currentStep;
             const isClickable = stepNumber <= currentStep || visitedSteps.includes(stepNumber);
             
             return (
               <div 
                 key={index} 
-                className={`text-xs font-medium ${isVisited ? 'text-primary cursor-pointer hover:underline' : 'text-muted-foreground'}`}
+                className={`text-xs font-medium transition-colors 
+                  ${isActive ? 'text-primary font-semibold' : 
+                    isVisited ? 'text-primary cursor-pointer hover:underline' : 
+                    'text-muted-foreground'}`}
                 style={{
                   width: `${100 / totalSteps}%`,
                   textAlign: index === 0 ? 'left' : index === totalSteps - 1 ? 'right' : 'center'

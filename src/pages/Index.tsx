@@ -1,12 +1,22 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import StepIndicator from '@/components/StepIndicator';
 import ConfigStep, { ConfigData } from '@/components/ConfigStep';
 import FilterStep from '@/components/FilterStep';
 import { Toaster } from '@/components/ui/sonner';
 import { Button } from '@/components/ui/button';
-import { Download, FileDown } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Download, FileDown, History } from 'lucide-react';
 import { toast } from 'sonner';
+
+interface DownloadRecord {
+  id: string;
+  authority: string;
+  template: string;
+  date: string;
+  isEmpty: boolean;
+}
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -16,6 +26,17 @@ const Index = () => {
     template: '',
     dataSource: ''
   });
+  const [downloadHistory, setDownloadHistory] = useState<DownloadRecord[]>(() => {
+    const storedHistory = localStorage.getItem('downloadHistory');
+    return storedHistory ? JSON.parse(storedHistory) : [];
+  });
+  
+  const navigate = useNavigate();
+
+  // Save download history to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('downloadHistory', JSON.stringify(downloadHistory));
+  }, [downloadHistory]);
 
   const stepLabels = [
     "Select Sheet",
@@ -71,13 +92,39 @@ const Index = () => {
       description: `${authorityName} - ${templateName}`,
     });
     
+    // Add to download history (limit to 20 items)
+    const newDownload: DownloadRecord = {
+      id: Date.now().toString(),
+      authority: config.authority,
+      template: config.template,
+      date: new Date().toLocaleDateString(),
+      isEmpty
+    };
+    
+    setDownloadHistory(prev => {
+      const updatedHistory = [newDownload, ...prev].slice(0, 20);
+      return updatedHistory;
+    });
+    
     // Automatically go to step 3 after download
     goToStep(3);
   };
 
+  const viewDownloadHistory = () => {
+    navigate('/download-history');
+  };
+
   return (
     <div className="flex-1 py-6 px-4">
-      <h1 className="text-2xl font-bold mb-6">Download UDI Device Data</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Download UDI Device Data</h1>
+        {downloadHistory.length > 0 && (
+          <Button variant="outline" onClick={viewDownloadHistory}>
+            <History className="h-4 w-4 mr-2" />
+            View Download History
+          </Button>
+        )}
+      </div>
       
       <StepIndicator 
         currentStep={currentStep} 
@@ -148,6 +195,47 @@ const Index = () => {
               Back to Select Sheet
             </Button>
           </div>
+
+          {downloadHistory.length > 0 && (
+            <Card className="mt-6 bg-muted/30">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center">
+                  <History className="h-4 w-4 mr-2" />
+                  Recent Downloads
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {downloadHistory.slice(0, 3).map((record) => (
+                    <div key={record.id} className="flex justify-between items-center p-2 bg-background rounded border">
+                      <div>
+                        <div className="font-medium">{record.authority.toUpperCase()} - {record.template}</div>
+                        <div className="text-xs text-muted-foreground">{record.date}</div>
+                      </div>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleDownload(record.isEmpty)}
+                      >
+                        <Download className="h-3.5 w-3.5 mr-1" />
+                        <span>Download</span>
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                {downloadHistory.length > 3 && (
+                  <Button 
+                    variant="ghost" 
+                    className="w-full mt-2" 
+                    size="sm"
+                    onClick={viewDownloadHistory}
+                  >
+                    View all {downloadHistory.length} downloads
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
       

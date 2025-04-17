@@ -23,7 +23,7 @@ import {
   HelpCircle,
   Upload,
   Send,
-  Package,
+  History,
 } from "lucide-react";
 
 const AppSidebar = () => {
@@ -48,6 +48,11 @@ const AppSidebar = () => {
       title: "Download Data",
       path: "/",
       icon: Download,
+    },
+    {
+      title: "Download History",
+      path: "/download-history",
+      icon: History, 
     },
     {
       title: "Upload Data",
