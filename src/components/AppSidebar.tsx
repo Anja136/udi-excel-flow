@@ -53,7 +53,7 @@ const AppSidebar = () => {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Bulk Maintenance</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sm font-semibold text-sidebar-foreground/70 uppercase">Bulk Maintenance</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {bulkMaintenanceItems.map((item) => (
@@ -62,9 +62,13 @@ const AppSidebar = () => {
                     isActive={isActive(item.path)}
                     tooltip={item.title}
                     onClick={() => navigate(item.path)}
-                    className="hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
+                    className={`
+                      hover:bg-sidebar-primary hover:text-sidebar-primary-foreground
+                      transition-colors duration-200
+                      ${isActive(item.path) ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}
+                    `}
                   >
-                    <item.icon className="mr-2 h-5 w-5" />
+                    <item.icon className="mr-3 h-5 w-5" />
                     <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
