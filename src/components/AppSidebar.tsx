@@ -164,7 +164,10 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
+        {/* Spacer to push User Guidance to the bottom */}
+        <div className="flex-grow"></div>
+
+        <SidebarGroup className="mt-auto">
           <SidebarGroupLabel>User Guidance</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
