@@ -9,15 +9,6 @@ const AgencyCard = ({ agency }: { agency: Agency }) => {
   return (
     <div className={`p-6 bg-white rounded-lg border border-gray-200 hover:border-primary/50 transition-colors ${!agency.isAccessible ? 'opacity-75' : ''}`}>
       <div className="flex items-center justify-between mb-4">
-        {agency.flag && (
-          <div className="w-8 h-6">
-            <Image
-              src={agency.flag}
-              alt={`${agency.name} flag`}
-              className="w-full h-full object-cover rounded filter grayscale"
-            />
-          </div>
-        )}
         <button 
           className="text-sm text-gray-600 hover:text-primary flex items-center gap-1"
           onClick={() => console.log(`View details for ${agency.name}`)}
