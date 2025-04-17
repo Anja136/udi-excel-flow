@@ -53,7 +53,7 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
   const [newProcessName, setNewProcessName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedProcess, setSelectedProcess] = useState<string>("");
-  const [showDetailConfig, setShowDetailConfig] = useState(true);
+  const [showDetailConfig, setShowDetailConfig] = useState(false);
   
   // Simulated data - in a real app, this would come from an API
   const authorities = [
@@ -155,6 +155,11 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
     toast.success("Process saved successfully");
   };
 
+  const isNextButtonEnabled = () => {
+    if (selectedProcess) return true;
+    return selectedConfig.authority && selectedConfig.template && selectedConfig.dataSource;
+  };
+
   return (
     <div className="max-w-3xl mx-auto">
       <Card>
@@ -164,10 +169,11 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
             Select a saved process or configure new download parameters
           </CardDescription>
         </CardHeader>
+
         <CardContent className="space-y-6">
-          {/* Saved Processes Dropdown */}
-          <div className="space-y-2">
-            <Label htmlFor="savedProcess">Saved Processes</Label>
+          {/* Saved Processes Section - Visually Highlighted */}
+          <div className="bg-muted/40 p-4 rounded-lg border border-muted">
+            <h3 className="text-sm font-semibold mb-2">Saved Processes</h3>
             <Select 
               value={selectedProcess} 
               onValueChange={handleProcessSelect}
@@ -176,11 +182,17 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
                 <SelectValue placeholder="Select a saved process" />
               </SelectTrigger>
               <SelectContent>
-                {savedProcesses.map(process => (
-                  <SelectItem key={process.id} value={process.id}>
-                    {process.name}
+                {savedProcesses.length > 0 ? (
+                  savedProcesses.map(process => (
+                    <SelectItem key={process.id} value={process.id}>
+                      {process.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="no-processes" disabled>
+                    No saved processes
                   </SelectItem>
-                ))}
+                )}
                 {selectedProcess && (
                   <SelectItem value="configure">
                     Configure New Parameters
@@ -190,9 +202,9 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
             </Select>
           </div>
 
-          {/* Toggle to show configuration */}
-          {selectedProcess && !showDetailConfig && (
-            <div className="flex justify-center">
+          {/* Configure Parameters Button */}
+          {!showDetailConfig && (
+            <div className="flex justify-center mt-4">
               <Button 
                 variant="outline" 
                 onClick={() => setShowDetailConfig(true)}
@@ -205,8 +217,8 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
           )}
 
           {/* Configuration Parameters */}
-          {(showDetailConfig || !selectedProcess) && (
-            <>
+          {showDetailConfig && (
+            <div className="space-y-6 mt-6">
               <div className="space-y-2">
                 <Label htmlFor="authority">Regulatory Authority</Label>
                 <Select 
@@ -263,47 +275,49 @@ const ConfigStep: React.FC<ConfigStepProps> = ({ onNext, onConfigChange, config 
                   </SelectContent>
                 </Select>
               </div>
-            </>
+
+              {/* Save as Process Dialog - Only show in Configure Parameters mode */}
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="mt-4">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save as Process
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Save Process Configuration</DialogTitle>
+                    <DialogDescription>
+                      Enter a name to save your current configuration for future use
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-4">
+                    <Label htmlFor="processName">Process Name</Label>
+                    <Input 
+                      id="processName" 
+                      value={newProcessName} 
+                      onChange={(e) => setNewProcessName(e.target.value)} 
+                      placeholder="Enter process name"
+                    />
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={saveProcess}>
+                      Save Process
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
           )}
         </CardContent>
-        <CardFooter className="flex justify-between">
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                <Save className="h-4 w-4 mr-2" />
-                Save as Process
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Save Process Configuration</DialogTitle>
-                <DialogDescription>
-                  Enter a name to save your current configuration for future use
-                </DialogDescription>
-              </DialogHeader>
-              <div className="py-4">
-                <Label htmlFor="processName">Process Name</Label>
-                <Input 
-                  id="processName" 
-                  value={newProcessName} 
-                  onChange={(e) => setNewProcessName(e.target.value)} 
-                  placeholder="Enter process name"
-                />
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={saveProcess}>
-                  Save Process
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          
+
+        <CardFooter className="flex justify-end">
           <Button 
             onClick={onNext}
-            disabled={!selectedConfig.authority || !selectedConfig.template || !selectedConfig.dataSource}
+            disabled={!isNextButtonEnabled()}
           >
             Next Step
           </Button>
