@@ -26,12 +26,12 @@ const StatusBadge = ({ label, count, className = '' }: StatusBadgeProps) => {
       case 'Submitted':
         return {
           colorClasses: "bg-green-100 text-green-700",
-          tooltip: 'Data submitted and processed'
+          tooltip: 'Submitted to agency and successfully registered'
         };
       case 'Needs Update':
         return {
           colorClasses: "bg-red-100 text-red-700",
-          tooltip: 'Updates required'
+          tooltip: 'Submitted to agency with error'
         };
       default:
         return {
