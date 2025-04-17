@@ -11,13 +11,13 @@ const Hub = () => {
       name: "U.S. FDA Global Unique Device Identification Database",
       shortName: "GUDID",
       description: "U.S. FDA Global Unique Device Identification Database",
-      totalDevices: 8,
+      totalDevices: 28,
       color: "#0EA5E9",
       status: {
-        created: 1,
-        processed: 3,
-        submitted: 3,
-        needsUpdate: 1
+        created: 4,
+        processed: 8,
+        submitted: 12,
+        needsUpdate: 4
       }
     },
     {
@@ -25,13 +25,13 @@ const Hub = () => {
       name: "European Database on Medical Devices",
       shortName: "EUDAMED",
       description: "European Database on Medical Devices",
-      totalDevices: 7,
+      totalDevices: 24,
       color: "#2563EB",
       status: {
-        created: 2,
-        processed: 2,
-        submitted: 1,
-        needsUpdate: 2
+        created: 6,
+        processed: 6,
+        submitted: 8,
+        needsUpdate: 4
       }
     },
     {
@@ -54,14 +54,14 @@ const Hub = () => {
       name: "South Korean UDI Database",
       shortName: "IMDIS",
       description: "South Korean UDI Database",
-      totalDevices: 5,
+      totalDevices: 20,
       color: "#EC4899",
       flag: "/flags/kr.png",
       status: {
-        created: 1,
-        processed: 0,
-        submitted: 2,
-        needsUpdate: 2
+        created: 3,
+        processed: 5,
+        submitted: 8,
+        needsUpdate: 4
       }
     },
     {
@@ -85,14 +85,14 @@ const Hub = () => {
       name: "Taiwanese UDI Database",
       shortName: "TUDID",
       description: "Taiwanese UDI Database",
-      totalDevices: 3,
+      totalDevices: 15,
       color: "#EF4444",
       flag: "/flags/tw.png",
       status: {
-        created: 1,
-        processed: 1,
-        submitted: 0,
-        needsUpdate: 1
+        created: 4,
+        processed: 3,
+        submitted: 5,
+        needsUpdate: 3
       }
     },
     {
@@ -100,14 +100,14 @@ const Hub = () => {
       name: "Australian Unique Device Identification Database",
       shortName: "AusUDID",
       description: "Australian Unique Device Identification Database",
-      totalDevices: 5,
+      totalDevices: 18,
       color: "#F59E0B",
       flag: "/flags/au.png",
       status: {
-        created: 1,
-        processed: 1,
-        submitted: 2,
-        needsUpdate: 1
+        created: 3,
+        processed: 4,
+        submitted: 7,
+        needsUpdate: 4
       }
     }
   ];
