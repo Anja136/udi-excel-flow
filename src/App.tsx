@@ -25,7 +25,7 @@ const App = () => (
         <SidebarProvider>
           <div className="flex min-h-screen w-full flex-col bg-background">
             <Header />
-            <div className="flex flex-1 w-full">
+            <div className="flex flex-1 w-full mt-16"> {/* Added mt-16 to push content below header */}
               <AppSidebar />
               <SidebarInset>
                 <Routes>
