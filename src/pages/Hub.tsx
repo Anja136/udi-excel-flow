@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { type Agency } from '@/types/agency';
 import AgencyCard from '@/components/agency/AgencyCard';
@@ -111,14 +110,13 @@ const Hub = () => {
     }
   ];
 
-  // Sort agencies: accessible agencies first, then inaccessible agencies
   const sortedAgencies = [...agencies].sort((a, b) => 
     (a.isAccessible === false ? 1 : -1)
   );
 
   return (
     <div className="container mx-auto py-6 px-4">
-      <h1 className="text-2xl font-bold mb-6">Agency Status Hub</h1>
+      <h1 className="text-2xl font-bold mb-6">Agency Hub</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {sortedAgencies.map(agency => (
           <AgencyCard key={agency.id} agency={agency} />
