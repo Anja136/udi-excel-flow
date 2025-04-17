@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { 
@@ -27,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Download, Filter, FileDown, CircleDot, AlertCircle, Info } from "lucide-react";
+import { Search, Download, Filter, FileDown, CircleDot, AlertCircle, Info, RefreshCw } from "lucide-react";
 import { ConfigData } from './ConfigStep';
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -65,14 +64,13 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
   const [devices, setDevices] = useState<DeviceData[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [showDownloadWarning, setShowDownloadWarning] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   
   useEffect(() => {
-    // Initialize devices with downloadability status
     const mockDevices = generateMockDevices();
     setDevices(mockDevices);
   }, []);
   
-  // Generate mock data based on the selected authority
   function generateMockDevices(): DeviceData[] {
     const prefixes: Record<string, string> = {
       fda: "US-",
@@ -107,19 +105,16 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
     });
   }
 
-  // Check if a device is downloadable based on its SRV status
   const isDeviceDownloadable = (device: DeviceData) => {
     return device.srvStatus === 'completed';
   };
 
   const filteredDevices = devices.filter((device) => {
-    // Match search term against multiple fields
     const matchesSearch = searchTerm === "" || 
       device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       device.deviceIdentifier.toLowerCase().includes(searchTerm.toLowerCase()) ||
       device.manufacturerName.toLowerCase().includes(searchTerm.toLowerCase());
     
-    // Match specific filters
     const matchesDeviceId = deviceFilter === "" || 
       device.deviceIdentifier.toLowerCase().includes(deviceFilter.toLowerCase());
     
@@ -134,7 +129,6 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
     const matchesSrvStatus = srvFilter === "all" || 
       device.srvStatus === srvFilter;
     
-    // Time-based filter (recent)
     let matchesTimeFilter = true;
     if (selectedFilter === "recent") {
       const lastUpdateDate = new Date(device.lastUpdated);
@@ -148,7 +142,6 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
   });
   
   useEffect(() => {
-    // Check if we need to show the warning (selected devices that aren't downloadable)
     const selectedDevices = devices.filter(d => d.selected);
     const nonDownloadableSelected = selectedDevices.some(d => !d.isDownloadable);
     setShowDownloadWarning(nonDownloadableSelected && selectedDevices.length > 0);
@@ -158,7 +151,6 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
     setSelectAll(checked);
     setDevices(devices.map(device => ({
       ...device,
-      // Only allow selection if device is downloadable
       selected: checked && device.isDownloadable
     })));
   };
@@ -166,7 +158,6 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
   const handleSelectDevice = (id: string, checked: boolean) => {
     const device = devices.find(d => d.id === id);
     
-    // If device is not downloadable, show a toast and prevent selection
     if (device && !device.isDownloadable && checked) {
       toast.error("Cannot select device with incomplete SRV calculation", {
         description: "Only devices with completed SRV calculation can be downloaded"
@@ -179,7 +170,6 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
     );
     setDevices(updatedDevices);
     
-    // Update selectAll state based on whether all downloadable devices are selected
     const allDownloadableDevices = updatedDevices.filter(d => d.isDownloadable);
     const allDownloadableSelected = allDownloadableDevices.every(d => d.selected);
     setSelectAll(allDownloadableSelected && allDownloadableDevices.length > 0);
@@ -191,11 +181,9 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
       return;
     }
     
-    // Count selected and downloadable devices
     const selectedDevices = devices.filter(d => d.selected);
     const downloadableDevices = selectedDevices.filter(d => d.isDownloadable);
     
-    // In a real app, this would call an API to generate the Excel file
     const authorityName = {
       fda: "FDA",
       ema: "EMA",
@@ -217,11 +205,38 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
       description: `${authorityName} - ${templateName}`,
     });
     
-    // Pass downloadable device info to next step
     onNext({
       total: selectedDevices.length,
       downloadable: downloadableDevices.length
     });
+  };
+  
+  const handleRefreshData = () => {
+    setIsRefreshing(true);
+    
+    setTimeout(() => {
+      const updatedDevices = generateMockDevices().map(newDevice => {
+        const existingDevice = devices.find(d => d.id === newDevice.id);
+        if (existingDevice) {
+          return {
+            ...newDevice,
+            selected: existingDevice.selected && newDevice.isDownloadable,
+          };
+        }
+        return newDevice;
+      });
+      
+      setDevices(updatedDevices);
+      setIsRefreshing(false);
+      
+      const allDownloadableDevices = updatedDevices.filter(d => d.isDownloadable);
+      const allDownloadableSelected = allDownloadableDevices.every(d => d.selected);
+      setSelectAll(allDownloadableSelected && allDownloadableDevices.length > 0);
+      
+      toast.success("Device data refreshed", {
+        description: "The table has been updated with the latest device information"
+      });
+    }, 1000);
   };
   
   const hasSelectedDevices = devices.some(d => d.selected);
@@ -304,12 +319,25 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
     <div className="max-w-5xl mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle>Filter Device Data</CardTitle>
-          <CardDescription>
-            Select devices to include in your {config.authority.toUpperCase()} submission
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Filter Device Data</CardTitle>
+              <CardDescription>
+                Select devices to include in your {config.authority.toUpperCase()} submission
+              </CardDescription>
+            </div>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={handleRefreshData}
+              disabled={isRefreshing}
+              className="ml-2 flex-shrink-0"
+            >
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span className="sr-only">Refresh data</span>
+            </Button>
+          </div>
           
-          {/* Download buttons moved to the top */}
           <div className="flex gap-3 mt-4">
             <Button 
               onClick={() => handleDownload(false)} 
@@ -366,7 +394,6 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
               </div>
             </div>
             
-            {/* Additional Filters */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
               <div>
                 <Label htmlFor="device-identifier" className="text-sm">Device Identifier</Label>
