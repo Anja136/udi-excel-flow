@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { 
@@ -454,7 +453,6 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
             </div>
           </div>
           
-          {/* New section for refresh button right above the table */}
           <div className="flex justify-between items-center mb-4">
             <div className="text-xs text-muted-foreground">
               Downloadable devices: {downloadableFilteredDevices} of {totalFilteredDevices}
