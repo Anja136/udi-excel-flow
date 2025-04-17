@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
@@ -11,9 +10,9 @@ import NotFound from "@/pages/NotFound";
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/download-data" replace />} />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="/download-data" element={<Index />} />
-      <Route path="/hub" element={<Hub />} />
+      <Route path="/dashboard" element={<Hub />} />
       <Route path="/report" element={<Report />} />
       <Route path="/download-history" element={<DownloadHistory />} />
       <Route path="/upload-data" element={<Placeholder />} />

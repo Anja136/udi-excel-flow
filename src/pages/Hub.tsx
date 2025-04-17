@@ -1,46 +1,90 @@
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { type Agency } from '@/types/agency';
+import AgencyCard from '@/components/agency/AgencyCard';
 
 const Hub = () => {
+  const agencies: Agency[] = [
+    {
+      id: "gudid",
+      name: "U.S. FDA Global Unique Device Identification Database",
+      shortName: "GUDID",
+      description: "U.S. FDA Global Unique Device Identification Database",
+      totalDevices: 8,
+      color: "#0EA5E9",
+      status: {
+        created: 1,
+        processed: 3,
+        submitted: 3,
+        needsUpdate: 1
+      }
+    },
+    {
+      id: "eudamed",
+      name: "European Database on Medical Devices",
+      shortName: "EUDAMED",
+      description: "European Database on Medical Devices",
+      totalDevices: 7,
+      color: "#2563EB",
+      status: {
+        created: 2,
+        processed: 2,
+        submitted: 1,
+        needsUpdate: 2
+      }
+    },
+    {
+      id: "cudid",
+      name: "China Unique Device Identification Database",
+      shortName: "CUDID",
+      description: "China Unique Device Identification Database",
+      totalDevices: 0,
+      color: "#9B87F5",
+      isAccessible: false,
+      status: {
+        created: 0,
+        processed: 0,
+        submitted: 0,
+        needsUpdate: 0
+      }
+    },
+    {
+      id: "imdis",
+      name: "India Medical Device Information System",
+      shortName: "IMDIS",
+      description: "India Medical Device Information System",
+      totalDevices: 5,
+      color: "#EC4899",
+      status: {
+        created: 1,
+        processed: 0,
+        submitted: 2,
+        needsUpdate: 2
+      }
+    },
+    {
+      id: "ausudid",
+      name: "Australian Unique Device Identification Database",
+      shortName: "AusUDID",
+      description: "Australian Unique Device Identification Database",
+      totalDevices: 5,
+      color: "#F59E0B",
+      status: {
+        created: 1,
+        processed: 1,
+        submitted: 2,
+        needsUpdate: 1
+      }
+    }
+  ];
+
   return (
     <div className="container mx-auto py-6 px-4">
-      <h1 className="text-2xl font-bold mb-6">Hub Dashboard</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Your recent UDI device submissions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>You haven't submitted any UDI data recently.</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Links</CardTitle>
-            <CardDescription>Common UDI management tasks</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            <a href="/" className="text-primary hover:underline">Download Data</a>
-            <a href="/report" className="text-primary hover:underline">Generate Reports</a>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>System Status</CardTitle>
-            <CardDescription>Current system availability</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span>All systems operational</span>
-            </div>
-          </CardContent>
-        </Card>
+      <h1 className="text-2xl font-bold mb-6">Agency Status Hub</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {agencies.map(agency => (
+          <AgencyCard key={agency.id} agency={agency} />
+        ))}
       </div>
     </div>
   );
