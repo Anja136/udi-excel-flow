@@ -24,27 +24,25 @@ const App = () => (
       <BrowserRouter>
         <SidebarProvider>
           <div className="flex min-h-screen w-full flex-col bg-background">
+            <div className="h-16 w-full absolute top-0 z-40 bg-primary"></div> {/* Background for header */}
             <Header />
-            <div className="flex flex-1 w-full">
-              <div className="h-16 w-full absolute top-0 z-40 bg-primary"></div> {/* Background for header */}
-              <div className="flex w-full pt-16"> {/* Added pt-16 instead of mt-16 to push content below header */}
-                <AppSidebar />
-                <SidebarInset>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/hub" element={<Hub />} />
-                    <Route path="/report" element={<Report />} />
-                    <Route path="/download-history" element={<DownloadHistory />} />
-                    <Route path="/upload-data" element={<Placeholder />} />
-                    <Route path="/submit" element={<Placeholder />} />
-                    <Route path="/handbook" element={<Placeholder />} />
-                    <Route path="/getting-started" element={<Placeholder />} />
-                    <Route path="/trust-center" element={<Placeholder />} />
-                    <Route path="/help" element={<Placeholder />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </SidebarInset>
-              </div>
+            <div className="flex w-full pt-16"> {/* Content area with padding top for header */}
+              <AppSidebar />
+              <SidebarInset>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/hub" element={<Hub />} />
+                  <Route path="/report" element={<Report />} />
+                  <Route path="/download-history" element={<DownloadHistory />} />
+                  <Route path="/upload-data" element={<Placeholder />} />
+                  <Route path="/submit" element={<Placeholder />} />
+                  <Route path="/handbook" element={<Placeholder />} />
+                  <Route path="/getting-started" element={<Placeholder />} />
+                  <Route path="/trust-center" element={<Placeholder />} />
+                  <Route path="/help" element={<Placeholder />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </SidebarInset>
             </div>
           </div>
         </SidebarProvider>
