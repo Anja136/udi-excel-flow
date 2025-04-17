@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { LayoutDashboard, HardDrive, FileDown, History, Upload, Send, Download, FileText, BarChart3, Clock, Settings, HelpCircle, BookOpen, Star, Bell, User } from "lucide-react";
+import { LayoutDashboard, HardDrive, History, Upload, Send, Download, BarChart3, Settings, HelpCircle, BookOpen, Star, Bell, User } from "lucide-react";
 
 const AppSidebar = () => {
   const navigate = useNavigate();
@@ -16,17 +16,9 @@ const AppSidebar = () => {
     path: "/devices",
     icon: HardDrive
   }, {
-    title: "Templates",
-    path: "/templates",
-    icon: FileText
-  }, {
     title: "Reports",
     path: "/reports",
     icon: BarChart3
-  }, {
-    title: "Audit Log",
-    path: "/audit",
-    icon: Clock
   }];
 
   const bulkMaintenanceItems = [{
