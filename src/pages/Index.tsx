@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StepIndicator from '@/components/StepIndicator';
@@ -5,7 +6,7 @@ import ConfigStep, { ConfigData } from '@/components/ConfigStep';
 import FilterStep from '@/components/FilterStep';
 import { Toaster } from '@/components/ui/sonner';
 import { Button } from '@/components/ui/button';
-import { History } from 'lucide-react';
+import { History, Download, FileDown } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface DownloadRecord {
