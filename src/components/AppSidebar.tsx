@@ -69,7 +69,7 @@ const AppSidebar = () => {
   const bulkMaintenanceItems = [
     {
       title: "Download Data",
-      path: "/",
+      path: "/download-data",
       icon: Download,
     },
     {
@@ -116,6 +116,25 @@ const AppSidebar = () => {
     return location.pathname === path;
   };
 
+  const renderMenuItems = (items: typeof mainMenuItems) => (
+    <SidebarMenu>
+      {items.map((item) => (
+        <SidebarMenuItem key={item.title}>
+          <SidebarMenuButton 
+            isActive={isActive(item.path)}
+            onClick={() => navigate(item.path)}
+            className={isActive(item.path) 
+              ? "bg-[#0F172A] text-white" 
+              : "hover:bg-[#F1F5F9] hover:text-[#0F172A] text-[#475569]"}
+          >
+            <item.icon className="w-5 h-5" />
+            <span>{item.title}</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      ))}
+    </SidebarMenu>
+  );
+
   return (
     <Sidebar className="border-r border-gray-200">
       <SidebarContent>
@@ -126,70 +145,25 @@ const AppSidebar = () => {
         </div>
 
         <SidebarGroup>
+          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {mainMenuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    isActive={isActive(item.path)}
-                    onClick={() => navigate(item.path)}
-                    className={isActive(item.path) 
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+            {renderMenuItems(mainMenuItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
           <SidebarGroupLabel>Bulk Maintenance</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {bulkMaintenanceItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    isActive={isActive(item.path)}
-                    onClick={() => navigate(item.path)}
-                    className={isActive(item.path) 
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+            {renderMenuItems(bulkMaintenanceItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Spacer to push User Guidance to the bottom */}
         <div className="flex-grow"></div>
 
         <SidebarGroup className="mt-auto">
           <SidebarGroupLabel>User Guidance</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {guidanceItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    isActive={isActive(item.path)}
-                    onClick={() => navigate(item.path)}
-                    className={isActive(item.path) 
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+            {renderMenuItems(guidanceItems)}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
