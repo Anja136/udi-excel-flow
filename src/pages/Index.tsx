@@ -143,24 +143,11 @@ const Index = () => {
       )}
       
       {currentStep === 2 && (
-        <>
-          <div className="flex justify-center gap-3 mb-6">
-            <Button onClick={() => handleDownload(false)}>
-              <Download className="h-4 w-4 mr-2" />
-              Download Excel Template
-            </Button>
-            <Button variant="outline" onClick={() => handleDownload(true)}>
-              <FileDown className="h-4 w-4 mr-2" />
-              Download Empty Sheet
-            </Button>
-          </div>
-          
-          <FilterStep 
-            onPrev={goToPrev}
-            onNext={goToNext} 
-            config={config}
-          />
-        </>
+        <FilterStep 
+          onPrev={goToPrev}
+          onNext={goToNext} 
+          config={config}
+        />
       )}
       
       {currentStep === 3 && (

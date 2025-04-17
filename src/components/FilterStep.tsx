@@ -133,6 +133,8 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
     onNext();
   };
   
+  const hasSelectedDevices = devices.some(d => d.selected);
+  
   return (
     <div className="max-w-5xl mx-auto">
       <Card>
@@ -141,16 +143,6 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
           <CardDescription>
             Select devices to include in your {config.authority.toUpperCase()} submission
           </CardDescription>
-          <div className="flex flex-wrap gap-3 mt-4">
-            <Button onClick={() => handleDownload(false)} disabled={!devices.some(d => d.selected)}>
-              <Download className="h-4 w-4 mr-2" />
-              Download Excel Template
-            </Button>
-            <Button variant="outline" onClick={() => handleDownload(true)}>
-              <FileDown className="h-4 w-4 mr-2" />
-              Download Empty Sheet
-            </Button>
-          </div>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -229,6 +221,22 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
           <Button variant="outline" onClick={onPrev}>
             Previous Step
           </Button>
+          <div className="flex gap-3">
+            <Button 
+              onClick={() => handleDownload(false)} 
+              disabled={!hasSelectedDevices}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Download Excel Template
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => handleDownload(true)}
+            >
+              <FileDown className="h-4 w-4 mr-2" />
+              Download Empty Sheet
+            </Button>
+          </div>
         </CardFooter>
       </Card>
     </div>
