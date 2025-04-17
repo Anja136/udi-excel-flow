@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { type Agency } from '@/types/agency';
 import AgencyCard from '@/components/agency/AgencyCard';
@@ -50,9 +49,9 @@ const Hub = () => {
     },
     {
       id: "imdis",
-      name: "India Medical Device Information System",
+      name: "South Korean UDI Database",
       shortName: "IMDIS",
-      description: "India Medical Device Information System",
+      description: "South Korean UDI Database",
       totalDevices: 5,
       color: "#EC4899",
       status: {
@@ -74,6 +73,35 @@ const Hub = () => {
         processed: 1,
         submitted: 2,
         needsUpdate: 1
+      }
+    },
+    {
+      id: "tudi",
+      name: "Turkish UDI Database",
+      shortName: "TUDI",
+      description: "Turkish UDI Database",
+      totalDevices: 3,
+      color: "#EF4444",
+      status: {
+        created: 1,
+        processed: 1,
+        submitted: 0,
+        needsUpdate: 1
+      }
+    },
+    {
+      id: "saudi-di",
+      name: "Saudi UDI Database",
+      shortName: "Saudi-DI",
+      description: "Saudi UDI Database",
+      totalDevices: 0,
+      color: "#10B981",
+      isAccessible: false,
+      status: {
+        created: 0,
+        processed: 0,
+        submitted: 0,
+        needsUpdate: 0
       }
     }
   ];
