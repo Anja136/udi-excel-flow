@@ -8,11 +8,11 @@ const AppSidebar = () => {
   const location = useLocation();
 
   const mainMenuItems = [{
-    title: "Dashboard",
+    title: "Agency Status Hub",
     path: "/dashboard",
     icon: LayoutDashboard
   }, {
-    title: "Devices",
+    title: "Device Data Browser",
     path: "/devices",
     icon: HardDrive
   }, {
