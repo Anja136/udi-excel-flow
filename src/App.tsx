@@ -31,6 +31,8 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/hub" element={<Hub />} />
                   <Route path="/report" element={<Report />} />
+                  <Route path="/upload-data" element={<Placeholder />} />
+                  <Route path="/submit" element={<Placeholder />} />
                   <Route path="/handbook" element={<Placeholder />} />
                   <Route path="/getting-started" element={<Placeholder />} />
                   <Route path="/trust-center" element={<Placeholder />} />

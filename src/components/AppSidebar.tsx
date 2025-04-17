@@ -21,6 +21,9 @@ import {
   Rocket,
   Shield,
   HelpCircle,
+  Upload,
+  Send,
+  Package,
 } from "lucide-react";
 
 const AppSidebar = () => {
@@ -38,10 +41,23 @@ const AppSidebar = () => {
       path: "/report",
       icon: FileText,
     },
+  ];
+
+  const bulkMaintenanceItems = [
     {
       title: "Download Data",
       path: "/",
       icon: Download,
+    },
+    {
+      title: "Upload Data",
+      path: "/upload-data",
+      icon: Upload,
+    },
+    {
+      title: "Submit",
+      path: "/submit",
+      icon: Send,
     },
   ];
 
@@ -80,6 +96,26 @@ const AppSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               {mainMenuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    isActive={isActive(item.path)}
+                    tooltip={item.title}
+                    onClick={() => navigate(item.path)}
+                  >
+                    <item.icon className="mr-2" />
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Bulk Maintenance</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {bulkMaintenanceItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     isActive={isActive(item.path)}

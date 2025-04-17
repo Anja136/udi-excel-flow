@@ -53,7 +53,8 @@ const Index = () => {
       
       {currentStep === 2 && (
         <FilterStep 
-          onPrev={goToPrev} 
+          onPrev={goToPrev}
+          onNext={goToNext} 
           config={config}
         />
       )}
@@ -62,6 +63,14 @@ const Index = () => {
         <div className="bg-card p-6 rounded-lg border border-border shadow-sm">
           <h2 className="text-xl font-medium mb-4">Download UDI Data</h2>
           <p className="mb-4">Your UDI data is ready for download.</p>
+          <div className="mb-4">
+            <p className="font-medium">Configuration:</p>
+            <ul className="list-disc pl-5 mt-2">
+              <li>Authority: {config.authority.toUpperCase()}</li>
+              <li>Template: {config.template}</li>
+              <li>Selected Devices: {currentStep === 3 ? "Ready to download" : "None selected"}</li>
+            </ul>
+          </div>
           <button className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />

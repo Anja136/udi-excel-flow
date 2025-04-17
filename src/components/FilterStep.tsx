@@ -20,13 +20,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Download, Filter } from "lucide-react";
+import { Search, Download, Filter, FileDown } from "lucide-react";
 import { ConfigData } from './ConfigStep';
 import { toast } from "sonner";
 
 interface FilterStepProps {
   onPrev: () => void;
   config: ConfigData;
+  onNext: () => void;
 }
 
 interface DeviceData {
@@ -39,7 +40,7 @@ interface DeviceData {
   selected: boolean;
 }
 
-const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config }) => {
+const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const [devices, setDevices] = useState<DeviceData[]>(generateMockDevices());
@@ -100,15 +101,13 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config }) => {
     setSelectAll(updatedDevices.every(d => d.selected));
   };
   
-  const handleDownload = () => {
-    const selectedDevices = devices.filter(d => d.selected);
-    if (selectedDevices.length === 0) {
+  const handleDownload = (isEmpty: boolean = false) => {
+    if (!isEmpty && !devices.some(d => d.selected)) {
       toast.error("Please select at least one device to download");
       return;
     }
     
     // In a real app, this would call an API to generate the Excel file
-    // For demo, we'll just show a toast
     const authorityName = {
       fda: "FDA",
       ema: "EMA",
@@ -124,9 +123,14 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config }) => {
       template4: "Package Labeling Template",
     }[config.template] || "Unknown";
     
-    toast.success(`Excel template downloaded for ${selectedDevices.length} devices`, {
+    const selectedCount = isEmpty ? 0 : devices.filter(d => d.selected).length;
+    
+    toast.success(`${isEmpty ? 'Empty' : ''} Excel template downloaded${!isEmpty ? ` for ${selectedCount} devices` : ''}`, {
       description: `${authorityName} - ${templateName}`,
     });
+    
+    // Proceed to next step
+    onNext();
   };
   
   return (
@@ -137,6 +141,16 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config }) => {
           <CardDescription>
             Select devices to include in your {config.authority.toUpperCase()} submission
           </CardDescription>
+          <div className="flex flex-wrap gap-3 mt-4">
+            <Button onClick={() => handleDownload(false)} disabled={!devices.some(d => d.selected)}>
+              <Download className="h-4 w-4 mr-2" />
+              Download Excel Template
+            </Button>
+            <Button variant="outline" onClick={() => handleDownload(true)}>
+              <FileDown className="h-4 w-4 mr-2" />
+              Download Empty Sheet
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -214,10 +228,6 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config }) => {
         <CardFooter className="flex justify-between">
           <Button variant="outline" onClick={onPrev}>
             Previous Step
-          </Button>
-          <Button onClick={handleDownload} disabled={!devices.some(d => d.selected)}>
-            <Download className="h-4 w-4 mr-2" />
-            Download Excel Template
           </Button>
         </CardFooter>
       </Card>
