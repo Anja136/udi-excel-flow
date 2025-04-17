@@ -4,7 +4,7 @@ import { Database } from 'lucide-react';
 
 const Header = () => {
   return (
-    <header className="bg-primary text-primary-foreground py-4 px-6 flex items-center justify-between w-full h-16">
+    <header className="bg-[#091A36] text-white py-4 px-6 flex items-center justify-between w-full h-16">
       <div className="flex-1"></div> {/* Left spacer */}
       <div className="flex items-center space-x-2">
         <Database className="h-6 w-6" />

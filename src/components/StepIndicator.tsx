@@ -36,8 +36,8 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
             <React.Fragment key={index}>
               <div 
                 className={`h-10 w-10 rounded-full flex items-center justify-center border-2 transition-all
-                  ${isActive ? 'bg-primary border-primary text-primary-foreground ring-4 ring-primary/20' : 
-                    isVisited ? 'bg-primary border-primary text-primary-foreground' : 
+                  ${isActive ? 'bg-[#091A36] border-[#091A36] text-white ring-4 ring-[#091A36]/20' : 
+                    isVisited ? 'bg-[#091A36] border-[#091A36] text-white' : 
                     'bg-background border-muted-foreground text-muted-foreground'}
                   ${isClickable ? 'cursor-pointer hover:opacity-80' : 'cursor-not-allowed'}`}
                 onClick={() => handleStepClick(stepNumber)}
@@ -50,7 +50,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
               {index < totalSteps - 1 && (
                 <div 
                   className={`h-1 flex-1 mx-2 transition-colors
-                    ${index < currentStep - 1 ? 'bg-primary' : 'bg-muted-foreground'}`}
+                    ${index < currentStep - 1 ? 'bg-[#091A36]' : 'bg-muted-foreground'}`}
                 />
               )}
             </React.Fragment>
@@ -70,8 +70,8 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
               <div 
                 key={index} 
                 className={`text-xs font-medium transition-colors 
-                  ${isActive ? 'text-primary font-semibold' : 
-                    isVisited ? 'text-primary cursor-pointer hover:underline' : 
+                  ${isActive ? 'text-[#091A36] font-semibold' : 
+                    isVisited ? 'text-[#091A36] cursor-pointer hover:underline' : 
                     'text-muted-foreground'}`}
                 style={{
                   width: `${100 / totalSteps}%`,
