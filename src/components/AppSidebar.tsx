@@ -69,7 +69,7 @@ const AppSidebar = () => {
   const bulkMaintenanceItems = [
     {
       title: "Download Data",
-      path: "/download-data",
+      path: "/",
       icon: Download,
     },
     {
