@@ -124,7 +124,7 @@ const AppSidebar = () => {
             isActive={isActive(item.path)}
             onClick={() => navigate(item.path)}
             className={isActive(item.path) 
-              ? "bg-[#0F172A] text-white" 
+              ? "bg-[#1A1F2C] text-white" // Dark navy/black for active state
               : "hover:bg-[#F1F5F9] hover:text-[#0F172A] text-[#475569]"}
           >
             <item.icon className="w-5 h-5" />
@@ -172,3 +172,4 @@ const AppSidebar = () => {
 };
 
 export default AppSidebar;
+
