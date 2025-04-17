@@ -4,6 +4,9 @@ import StepIndicator from '@/components/StepIndicator';
 import ConfigStep, { ConfigData } from '@/components/ConfigStep';
 import FilterStep from '@/components/FilterStep';
 import { Toaster } from '@/components/ui/sonner';
+import { Button } from '@/components/ui/button';
+import { Download, FileDown } from 'lucide-react';
+import { toast } from 'sonner';
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -31,6 +34,32 @@ const Index = () => {
 
   const goToPrev = () => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
+  };
+
+  const goToStep = (step: number) => {
+    setCurrentStep(Math.max(1, Math.min(step, totalSteps)));
+  };
+
+  const handleDownload = (isEmpty: boolean = false) => {
+    // In a real app, this would call an API to generate the Excel file
+    const authorityName = {
+      fda: "FDA",
+      ema: "EMA",
+      pmda: "PMDA",
+      anvisa: "ANVISA",
+      nmpa: "NMPA",
+    }[config.authority] || "Unknown";
+    
+    const templateName = {
+      template1: "UDI-DI Template",
+      template2: "Basic Device Information",
+      template3: "Full Device Details",
+      template4: "Package Labeling Template",
+    }[config.template] || "Unknown";
+    
+    toast.success(`${isEmpty ? 'Empty' : ''} Excel template downloaded`, {
+      description: `${authorityName} - ${templateName}`,
+    });
   };
 
   return (
@@ -71,14 +100,26 @@ const Index = () => {
               <li>Selected Devices: {currentStep === 3 ? "Ready to download" : "None selected"}</li>
             </ul>
           </div>
-          <button className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Download Excel Sheet
-          </button>
+          
+          <div className="flex flex-wrap gap-3 mb-6">
+            <Button onClick={() => handleDownload(false)}>
+              <Download className="h-4 w-4 mr-2" />
+              Download Excel Template
+            </Button>
+            <Button variant="outline" onClick={() => handleDownload(true)}>
+              <FileDown className="h-4 w-4 mr-2" />
+              Download Empty Sheet
+            </Button>
+          </div>
+          
+          <div className="flex justify-between mt-6">
+            <Button variant="outline" onClick={() => goToStep(2)}>
+              Back to Select Devices
+            </Button>
+            <Button variant="outline" onClick={() => goToStep(1)}>
+              Back to Select Sheet
+            </Button>
+          </div>
         </div>
       )}
       
