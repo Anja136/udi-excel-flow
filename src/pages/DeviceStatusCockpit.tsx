@@ -9,12 +9,18 @@ import { mockDeviceData } from '@/data/mockDeviceData';
 // Ordered agencies with All Devices first, then in the specified order
 const allAgencies = ["All Devices", "GUDID", "EUDAMED", "CUDID", "IMDIS", "Saudi-DI", "TUDID", "AusUDID"];
 
+// Agencies that the user doesn't have access to
+const inaccessibleAgencies = ["CUDID", "Saudi-DI"];
+
 export const DeviceStatusCockpit = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const initialAgency = searchParams.get('agency') || "All Devices";
   
   const [selectedAgency, setSelectedAgency] = useState(initialAgency);
+
+  // Check if the selected agency is accessible
+  const isAgencyAccessible = selectedAgency === "All Devices" || !inaccessibleAgencies.includes(selectedAgency);
 
   // Update filtered devices based on selected agency
   const filteredDevices = selectedAgency === "All Devices" 
@@ -48,35 +54,43 @@ export const DeviceStatusCockpit = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredDevices.length > 0 ? (
-                filteredDevices.map(device => (
-                  <TableRow key={device.id}>
-                    <TableCell className="font-mono">{device.id}</TableCell>
-                    <TableCell>{device.name}</TableCell>
-                    <TableCell>
-                      <DeviceStatusBadge status={device.status} />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1.5 flex-wrap">
-                        {device.agencies.map(agency => (
-                          <span
-                            key={agency}
-                            className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700"
-                          >
-                            {agency}
-                          </span>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right text-muted-foreground">
-                      {device.lastUpdated}
+              {isAgencyAccessible ? (
+                filteredDevices.length > 0 ? (
+                  filteredDevices.map(device => (
+                    <TableRow key={device.id}>
+                      <TableCell className="font-mono">{device.id}</TableCell>
+                      <TableCell>{device.name}</TableCell>
+                      <TableCell>
+                        <DeviceStatusBadge status={device.status} />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1.5 flex-wrap">
+                          {device.agencies.map(agency => (
+                            <span
+                              key={agency}
+                              className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700"
+                            >
+                              {agency}
+                            </span>
+                          ))}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        {device.lastUpdated}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-6">
+                      No devices found for {selectedAgency}
                     </TableCell>
                   </TableRow>
-                ))
+                )
               ) : (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-6">
-                    No devices found for {selectedAgency}
+                    No access to this data
                   </TableCell>
                 </TableRow>
               )}
