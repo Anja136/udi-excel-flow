@@ -33,15 +33,9 @@ interface DownloadRecord {
 }
 
 const DownloadHistory = () => {
-  // In a real app, this would come from a database or persistent storage
+  // Comprehensive dummy data for download history
   const [downloadHistory, setDownloadHistory] = React.useState<DownloadRecord[]>(() => {
-    const storedHistory = localStorage.getItem('downloadHistory');
-    if (storedHistory) {
-      return JSON.parse(storedHistory);
-    }
-    
-    // Mock data if none exists
-    return [
+    const mockDownloads: DownloadRecord[] = [
       {
         id: '1',
         authority: 'fda',
@@ -65,8 +59,68 @@ const DownloadHistory = () => {
         date: '2025-04-13',
         isEmpty: false,
         user: 'Alex Johnson'
+      },
+      {
+        id: '4',
+        authority: 'anvisa',
+        template: 'template4',
+        date: '2025-04-12',
+        isEmpty: false,
+        user: 'Maria Rodriguez'
+      },
+      {
+        id: '5',
+        authority: 'nmpa',
+        template: 'template1',
+        date: '2025-04-11',
+        isEmpty: true,
+        user: 'David Kim'
+      },
+      {
+        id: '6',
+        authority: 'fda',
+        template: 'template2',
+        date: '2025-04-10',
+        isEmpty: false,
+        user: 'Sarah Lee'
+      },
+      {
+        id: '7',
+        authority: 'ema',
+        template: 'template3',
+        date: '2025-04-09',
+        isEmpty: true,
+        user: 'Michael Chen'
+      },
+      {
+        id: '8',
+        authority: 'pmda',
+        template: 'template4',
+        date: '2025-04-08',
+        isEmpty: false,
+        user: 'Emily Watson'
+      },
+      {
+        id: '9',
+        authority: 'anvisa',
+        template: 'template1',
+        date: '2025-04-07',
+        isEmpty: true,
+        user: 'Carlos Mendes'
+      },
+      {
+        id: '10',
+        authority: 'nmpa',
+        template: 'template2',
+        date: '2025-04-06',
+        isEmpty: false,
+        user: 'Anna Petrova'
       }
     ];
+
+    // Store in localStorage
+    localStorage.setItem('downloadHistory', JSON.stringify(mockDownloads));
+    return mockDownloads;
   });
   
   const navigate = useNavigate();
