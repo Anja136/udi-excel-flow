@@ -4,6 +4,7 @@ import { type Agency } from '@/types/agency';
 import AgencyCard from '@/components/agency/AgencyCard';
 
 const Hub = () => {
+  // Define agencies in the specified order: GUDID, EUDAMED, CUDID, IMDIS, Saudi-DI, TUDID, AusUDID
   const agencies: Agency[] = [
     {
       id: "gudid",
@@ -111,15 +112,19 @@ const Hub = () => {
     }
   ];
 
-  const sortedAgencies = [...agencies].sort((a, b) => 
-    (a.isAccessible === false ? 1 : -1)
-  );
+  // Directly use the agencies array without sorting to maintain the defined order
+  // Only sort unaccessible agencies to the end
+  const displayedAgencies = [...agencies].sort((a, b) => {
+    if (a.isAccessible === false && b.isAccessible !== false) return 1;
+    if (a.isAccessible !== false && b.isAccessible === false) return -1;
+    return 0;
+  });
 
   return (
     <div className="container mx-auto py-6 px-4">
       <h1 className="text-2xl font-bold mb-6">Agency Hub</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {sortedAgencies.map(agency => (
+        {displayedAgencies.map(agency => (
           <AgencyCard key={agency.id} agency={agency} />
         ))}
       </div>

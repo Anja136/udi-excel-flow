@@ -6,7 +6,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { DeviceStatusBadge } from "@/components/devices/DeviceStatusBadge";
 import { mockDeviceData } from '@/data/mockDeviceData';
 
-// Ordered agencies with All Devices first
+// Ordered agencies with All Devices first, then in the specified order
 const allAgencies = ["All Devices", "GUDID", "EUDAMED", "CUDID", "IMDIS", "Saudi-DI", "TUDID", "AusUDID"];
 
 export const DeviceStatusCockpit = () => {
