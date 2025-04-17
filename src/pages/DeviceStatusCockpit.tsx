@@ -1,36 +1,30 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { DeviceStatusBadge } from "@/components/devices/DeviceStatusBadge";
-
-const mockDevices = [
-  {
-    id: "UDI-DI-00001",
-    name: "Cardiac Pacemaker X100",
-    status: "Submitted" as const,
-    agencies: ["GUDID", "EUDAMED", "IMDIS"],
-    lastUpdated: "Mar 15, 2025, 11:30 AM"
-  },
-  {
-    id: "UDI-DI-00002",
-    name: "Insulin Pump S200",
-    status: "Processed" as const,
-    agencies: ["GUDID", "AusUDID"],
-    lastUpdated: "Apr 2, 2025, 04:45 PM"
-  },
-  // Add a few more example devices...
-];
+import { mockDeviceData } from '@/data/mockDeviceData';
 
 const agencies = ["All Devices", "GUDID", "EUDAMED", "IMDIS", "AusUDID"];
 
 export const DeviceStatusCockpit = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const initialAgency = searchParams.get('agency') || "All Devices";
+  
+  const [selectedAgency, setSelectedAgency] = useState(initialAgency);
+
+  const filteredDevices = selectedAgency === "All Devices" 
+    ? mockDeviceData
+    : mockDeviceData.filter(device => device.agencies.includes(selectedAgency));
+
   return (
     <div className="container mx-auto py-6">
       <h1 className="text-2xl font-bold mb-6">Device Overview</h1>
       
       <div className="bg-card rounded-lg p-6">
-        <Tabs defaultValue="All Devices" className="mb-6">
+        <Tabs value={selectedAgency} onValueChange={setSelectedAgency} className="mb-6">
           <TabsList>
             {agencies.map(agency => (
               <TabsTrigger key={agency} value={agency}>
@@ -52,7 +46,7 @@ export const DeviceStatusCockpit = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockDevices.map(device => (
+              {filteredDevices.map(device => (
                 <TableRow key={device.id}>
                   <TableCell className="font-mono">{device.id}</TableCell>
                   <TableCell>{device.name}</TableCell>

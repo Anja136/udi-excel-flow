@@ -1,17 +1,26 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { type Agency } from '@/types/agency';
 import StatusBadge from './StatusBadge';
 import Image from './Image';
 
 const AgencyCard = ({ agency }: { agency: Agency }) => {
+  const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    if (agency.isAccessible !== false) {
+      navigate(`/devices?agency=${agency.shortName}`);
+    }
+  };
+
   return (
     <div className={`p-6 bg-white rounded-lg border border-gray-200 hover:border-primary/50 transition-colors ${!agency.isAccessible ? 'opacity-75' : ''}`}>
       <div className="flex items-center justify-between mb-4">
         <button 
           className="text-sm text-gray-600 hover:text-primary flex items-center gap-1"
-          onClick={() => console.log(`View details for ${agency.name}`)}
+          onClick={handleViewDetails}
         >
           {agency.isAccessible !== false ? (
             <>View Details <ChevronRight size={16} /></>
