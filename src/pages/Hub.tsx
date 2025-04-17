@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { type Agency } from '@/types/agency';
 import AgencyCard from '@/components/agency/AgencyCard';
@@ -54,6 +55,7 @@ const Hub = () => {
       description: "South Korean UDI Database",
       totalDevices: 5,
       color: "#EC4899",
+      flag: "/flags/kr.png",
       status: {
         created: 1,
         processed: 0,
@@ -68,6 +70,7 @@ const Hub = () => {
       description: "Australian Unique Device Identification Database",
       totalDevices: 5,
       color: "#F59E0B",
+      flag: "/flags/au.png",
       status: {
         created: 1,
         processed: 1,
@@ -76,12 +79,13 @@ const Hub = () => {
       }
     },
     {
-      id: "tudi",
-      name: "Turkish UDI Database",
-      shortName: "TUDI",
-      description: "Turkish UDI Database",
+      id: "tudid",
+      name: "Taiwanese UDI Database",
+      shortName: "TUDID",
+      description: "Taiwanese UDI Database",
       totalDevices: 3,
       color: "#EF4444",
+      flag: "/flags/tw.png",
       status: {
         created: 1,
         processed: 1,
@@ -96,6 +100,7 @@ const Hub = () => {
       description: "Saudi UDI Database",
       totalDevices: 0,
       color: "#10B981",
+      flag: "/flags/sa.png",
       isAccessible: false,
       status: {
         created: 0,

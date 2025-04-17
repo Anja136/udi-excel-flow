@@ -14,5 +14,6 @@ export type Agency = {
   totalDevices: number;
   status: DeviceStatus;
   color: string;
+  flag?: string;
   isAccessible?: boolean;
 };
