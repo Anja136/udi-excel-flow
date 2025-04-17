@@ -1,12 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { DeviceStatusBadge } from "@/components/devices/DeviceStatusBadge";
 import { mockDeviceData } from '@/data/mockDeviceData';
 
-const agencies = ["All Devices", "GUDID", "EUDAMED", "IMDIS", "AusUDID"];
+// Get all agencies from the Hub
+const allAgencies = ["All Devices", "GUDID", "EUDAMED", "IMDIS", "AusUDID", "TUDID", "CUDID", "Saudi-DI"];
 
 export const DeviceStatusCockpit = () => {
   const location = useLocation();
@@ -15,6 +16,7 @@ export const DeviceStatusCockpit = () => {
   
   const [selectedAgency, setSelectedAgency] = useState(initialAgency);
 
+  // Update filtered devices based on selected agency
   const filteredDevices = selectedAgency === "All Devices" 
     ? mockDeviceData
     : mockDeviceData.filter(device => device.agencies.includes(selectedAgency));
@@ -25,8 +27,8 @@ export const DeviceStatusCockpit = () => {
       
       <div className="bg-card rounded-lg p-6">
         <Tabs value={selectedAgency} onValueChange={setSelectedAgency} className="mb-6">
-          <TabsList>
-            {agencies.map(agency => (
+          <TabsList className="flex flex-wrap">
+            {allAgencies.map(agency => (
               <TabsTrigger key={agency} value={agency}>
                 {agency}
               </TabsTrigger>
@@ -46,30 +48,38 @@ export const DeviceStatusCockpit = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredDevices.map(device => (
-                <TableRow key={device.id}>
-                  <TableCell className="font-mono">{device.id}</TableCell>
-                  <TableCell>{device.name}</TableCell>
-                  <TableCell>
-                    <DeviceStatusBadge status={device.status} />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-1.5 flex-wrap">
-                      {device.agencies.map(agency => (
-                        <span
-                          key={agency}
-                          className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700"
-                        >
-                          {agency}
-                        </span>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {device.lastUpdated}
+              {filteredDevices.length > 0 ? (
+                filteredDevices.map(device => (
+                  <TableRow key={device.id}>
+                    <TableCell className="font-mono">{device.id}</TableCell>
+                    <TableCell>{device.name}</TableCell>
+                    <TableCell>
+                      <DeviceStatusBadge status={device.status} />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-1.5 flex-wrap">
+                        {device.agencies.map(agency => (
+                          <span
+                            key={agency}
+                            className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700"
+                          >
+                            {agency}
+                          </span>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right text-muted-foreground">
+                      {device.lastUpdated}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-6">
+                    No devices found for {selectedAgency}
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>

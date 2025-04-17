@@ -37,5 +37,19 @@ export const mockDeviceData: DeviceDataWithAgencies[] = [
     status: "Needs Update",
     agencies: ["GUDID", "IMDIS"],
     lastUpdated: "Apr 12, 2025, 02:20 PM"
+  },
+  {
+    id: "UDI-DI-00005",
+    name: "Ventilator T500",
+    status: "Created",
+    agencies: ["TUDID"],
+    lastUpdated: "Apr 14, 2025, 10:05 AM"
+  },
+  {
+    id: "UDI-DI-00006",
+    name: "Surgical Mask M600",
+    status: "Submitted",
+    agencies: ["TUDID", "AusUDID"],
+    lastUpdated: "Apr 15, 2025, 03:40 PM"
   }
 ];
