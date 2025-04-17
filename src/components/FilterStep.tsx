@@ -4,7 +4,6 @@ import {
   Card, 
   CardContent, 
   CardDescription, 
-  CardFooter, 
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card";
@@ -190,7 +189,7 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
       pmda: "PMDA",
       anvisa: "ANVISA",
       nmpa: "NMPA",
-    }[config.authority] || "Unknown";
+      }[config.authority] || "Unknown";
     
     const templateName = {
       template1: "UDI-DI Template",
@@ -326,16 +325,6 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
                 Select devices to include in your {config.authority.toUpperCase()} submission
               </CardDescription>
             </div>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={handleRefreshData}
-              disabled={isRefreshing}
-              className="ml-2 flex-shrink-0"
-            >
-              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-              <span className="sr-only">Refresh data</span>
-            </Button>
           </div>
           
           <div className="flex gap-3 mt-4">
@@ -461,6 +450,23 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
                 Downloadable devices: {downloadableFilteredDevices} of {totalFilteredDevices}
               </div>
             </div>
+          </div>
+          
+          {/* New section for refresh button right above the table */}
+          <div className="flex justify-between items-center mb-4">
+            <div className="text-xs text-muted-foreground">
+              Downloadable devices: {downloadableFilteredDevices} of {totalFilteredDevices}
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={handleRefreshData}
+              disabled={isRefreshing}
+              className="flex items-center"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh Data
+              {isRefreshing && <span className="ml-2 text-xs">Updating...</span>}
+            </Button>
           </div>
           
           <div className="border rounded-md">
