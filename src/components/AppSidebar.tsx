@@ -123,7 +123,10 @@ const AppSidebar = () => {
           <SidebarMenuButton 
             isActive={isActive(item.path)}
             onClick={() => navigate(item.path)}
-            style={isActive(item.path) ? { backgroundColor: '#1A1F2C', color: 'white' } : undefined}
+            style={isActive(item.path) ? { 
+              backgroundColor: '#091A36', 
+              color: 'white' 
+            } : undefined}
             className={isActive(item.path) 
               ? "" // Using inline style for active state to ensure it works
               : "hover:bg-[#F1F5F9] hover:text-[#0F172A] text-[#475569]"}
