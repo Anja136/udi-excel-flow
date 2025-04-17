@@ -1,13 +1,13 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { DeviceStatusBadge } from "@/components/devices/DeviceStatusBadge";
 import { mockDeviceData } from '@/data/mockDeviceData';
 
-// Get all agencies from the Hub
-const allAgencies = ["All Devices", "GUDID", "EUDAMED", "IMDIS", "AusUDID", "TUDID", "CUDID", "Saudi-DI"];
+// Ordered agencies with All Devices first
+const allAgencies = ["All Devices", "GUDID", "EUDAMED", "CUDID", "IMDIS", "Saudi-DI", "TUDID", "AusUDID"];
 
 export const DeviceStatusCockpit = () => {
   const location = useLocation();

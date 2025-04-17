@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { type Agency } from '@/types/agency';
 import AgencyCard from '@/components/agency/AgencyCard';
@@ -33,6 +34,21 @@ const Hub = () => {
       }
     },
     {
+      id: "cudid",
+      name: "China Unique Device Identification Database",
+      shortName: "CUDID",
+      description: "China Unique Device Identification Database",
+      totalDevices: 0,
+      color: "#9B87F5",
+      isAccessible: false,
+      status: {
+        created: 0,
+        processed: 0,
+        submitted: 0,
+        needsUpdate: 0
+      }
+    },
+    {
       id: "imdis",
       name: "South Korean UDI Database",
       shortName: "IMDIS",
@@ -48,18 +64,19 @@ const Hub = () => {
       }
     },
     {
-      id: "ausudid",
-      name: "Australian Unique Device Identification Database",
-      shortName: "AusUDID",
-      description: "Australian Unique Device Identification Database",
-      totalDevices: 5,
-      color: "#F59E0B",
-      flag: "/flags/au.png",
+      id: "saudi-di",
+      name: "Saudi UDI Database",
+      shortName: "Saudi-DI",
+      description: "Saudi UDI Database",
+      totalDevices: 0,
+      color: "#10B981",
+      flag: "/flags/sa.png",
+      isAccessible: false,
       status: {
-        created: 1,
-        processed: 1,
-        submitted: 2,
-        needsUpdate: 1
+        created: 0,
+        processed: 0,
+        submitted: 0,
+        needsUpdate: 0
       }
     },
     {
@@ -78,34 +95,18 @@ const Hub = () => {
       }
     },
     {
-      id: "cudid",
-      name: "China Unique Device Identification Database",
-      shortName: "CUDID",
-      description: "China Unique Device Identification Database",
-      totalDevices: 0,
-      color: "#9B87F5",
-      isAccessible: false,
+      id: "ausudid",
+      name: "Australian Unique Device Identification Database",
+      shortName: "AusUDID",
+      description: "Australian Unique Device Identification Database",
+      totalDevices: 5,
+      color: "#F59E0B",
+      flag: "/flags/au.png",
       status: {
-        created: 0,
-        processed: 0,
-        submitted: 0,
-        needsUpdate: 0
-      }
-    },
-    {
-      id: "saudi-di",
-      name: "Saudi UDI Database",
-      shortName: "Saudi-DI",
-      description: "Saudi UDI Database",
-      totalDevices: 0,
-      color: "#10B981",
-      flag: "/flags/sa.png",
-      isAccessible: false,
-      status: {
-        created: 0,
-        processed: 0,
-        submitted: 0,
-        needsUpdate: 0
+        created: 1,
+        processed: 1,
+        submitted: 2,
+        needsUpdate: 1
       }
     }
   ];
