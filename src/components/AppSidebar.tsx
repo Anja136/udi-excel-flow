@@ -12,16 +12,60 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import {
-  Download,
+  LayoutDashboard,
+  HardDrive,
+  FileDown,
   History,
   Upload,
   Send,
+  Download,
+  FileText,
+  BarChart3,
+  Clock,
+  Settings,
+  HelpCircle,
+  BookOpen,
+  Star,
+  Bell
 } from "lucide-react";
 
 const AppSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
+  const mainMenuItems = [
+    {
+      title: "Dashboard",
+      path: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      title: "Devices",
+      path: "/devices",
+      icon: HardDrive,
+    },
+    {
+      title: "Templates",
+      path: "/templates",
+      icon: FileText,
+    },
+    {
+      title: "Reports",
+      path: "/reports",
+      icon: BarChart3,
+    },
+    {
+      title: "Audit Log",
+      path: "/audit",
+      icon: Clock,
+    },
+    {
+      title: "Settings",
+      path: "/settings",
+      icon: Settings,
+    },
+  ];
+
   const bulkMaintenanceItems = [
     {
       title: "Download Data",
@@ -45,30 +89,93 @@ const AppSidebar = () => {
     },
   ];
 
+  const guidanceItems = [
+    {
+      title: "Getting Started",
+      path: "/getting-started",
+      icon: HelpCircle,
+    },
+    {
+      title: "What's New",
+      path: "/whats-new",
+      icon: Bell,
+    },
+    {
+      title: "User Guide",
+      path: "/user-guide",
+      icon: BookOpen,
+    },
+    {
+      title: "Trust Center",
+      path: "/trust-center",
+      icon: Star,
+    },
+  ];
+
   const isActive = (path: string) => {
     return location.pathname === path;
   };
 
   return (
-    <Sidebar>
+    <Sidebar className="border-r border-gray-200">
       <SidebarContent>
+        <div className="p-4 border-b border-gray-200">
+          <h1 className="text-xl font-semibold flex items-center justify-between">
+            UDI Nexus Hub
+          </h1>
+        </div>
+
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sm font-semibold text-sidebar-foreground/70 uppercase">Bulk Maintenance</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {mainMenuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    isActive={isActive(item.path)}
+                    onClick={() => navigate(item.path)}
+                    className="hover:bg-gray-100 transition-colors duration-200"
+                  >
+                    <item.icon className="w-5 h-5" />
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Bulk Maintenance</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {bulkMaintenanceItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     isActive={isActive(item.path)}
-                    tooltip={item.title}
                     onClick={() => navigate(item.path)}
-                    className={`
-                      hover:bg-sidebar-primary hover:text-sidebar-primary-foreground
-                      transition-colors duration-200
-                      ${isActive(item.path) ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}
-                    `}
+                    className="hover:bg-gray-100 transition-colors duration-200"
                   >
-                    <item.icon className="mr-3 h-5 w-5" />
+                    <item.icon className="w-5 h-5" />
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>User Guidance</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {guidanceItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    isActive={isActive(item.path)}
+                    onClick={() => navigate(item.path)}
+                    className="text-gray-500 hover:bg-gray-100 transition-colors duration-200"
+                  >
+                    <item.icon className="w-5 h-5" />
                     <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
