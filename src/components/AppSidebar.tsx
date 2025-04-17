@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
@@ -12,7 +13,7 @@ const AppSidebar = () => {
     path: "/dashboard",
     icon: LayoutDashboard
   }, {
-    title: "Device Data Browser",
+    title: "Device Status Cockpit",
     path: "/devices",
     icon: HardDrive
   }, {
