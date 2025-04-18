@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,6 +5,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { DeviceStatusBadge } from "@/components/devices/DeviceStatusBadge";
 import { mockDeviceData } from '@/data/mockDeviceData';
 import { Checkbox } from "@/components/ui/checkbox";
+import { DeviceColumnFilters } from '@/components/devices/DeviceColumnFilters';
 
 const allAgencies = ["All Devices", "GUDID", "EUDAMED", "CUDID", "IMDIS", "Saudi-DI", "TUDID", "AusUDID"];
 const inaccessibleAgencies = ["CUDID", "Saudi-DI"];
@@ -18,6 +18,13 @@ export const DeviceStatusCockpit = () => {
   
   const [selectedAgency, setSelectedAgency] = useState(initialAgency);
   const [selectedDevices, setSelectedDevices] = useState<string[]>([]);
+  const [columnFilters, setColumnFilters] = useState({
+    deviceId: '',
+    name: '',
+    status: '',
+    agencies: '',
+    lastUpdated: ''
+  });
 
   const handleAgencyChange = (value: string) => {
     setSelectedAgency(value);
@@ -33,13 +40,17 @@ export const DeviceStatusCockpit = () => {
     });
   };
 
-  // Check if the selected agency is accessible
   const isAgencyAccessible = selectedAgency === "All Devices" || !inaccessibleAgencies.includes(selectedAgency);
 
-  // Update filtered devices based on selected agency and status
   const filteredDevices = mockDeviceData
     .filter(device => selectedAgency === "All Devices" ? true : device.agencies.includes(selectedAgency))
-    .filter(device => initialStatus ? device.status === initialStatus : true);
+    .filter(device => initialStatus ? device.status === initialStatus : true)
+    .filter(device => !columnFilters.deviceId || device.id.toLowerCase().includes(columnFilters.deviceId.toLowerCase()))
+    .filter(device => !columnFilters.name || device.name.toLowerCase().includes(columnFilters.name.toLowerCase()))
+    .filter(device => !columnFilters.status || device.status.toLowerCase().includes(columnFilters.status.toLowerCase()))
+    .filter(device => !columnFilters.agencies || device.agencies.some(agency => 
+      agency.toLowerCase().includes(columnFilters.agencies.toLowerCase())))
+    .filter(device => !columnFilters.lastUpdated || device.lastUpdated.toLowerCase().includes(columnFilters.lastUpdated.toLowerCase()));
 
   const handleSelectAllDevices = (checked: boolean) => {
     if (checked) {
@@ -60,6 +71,23 @@ export const DeviceStatusCockpit = () => {
   const showCheckboxes = selectedAgency !== "All Devices";
   const allSelected = filteredDevices.length > 0 && 
     filteredDevices.every(device => selectedDevices.includes(device.id));
+
+  const handleFilterChange = (field: keyof typeof columnFilters, value: string) => {
+    setColumnFilters(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleClearFilters = () => {
+    setColumnFilters({
+      deviceId: '',
+      name: '',
+      status: '',
+      agencies: '',
+      lastUpdated: ''
+    });
+  };
 
   return (
     <div className="container mx-auto py-6">
@@ -86,6 +114,12 @@ export const DeviceStatusCockpit = () => {
             ))}
           </TabsList>
         </Tabs>
+
+        <DeviceColumnFilters
+          filters={columnFilters}
+          onFilterChange={handleFilterChange}
+          onClearFilters={handleClearFilters}
+        />
 
         <div className="border rounded-md">
           <Table>
