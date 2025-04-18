@@ -12,7 +12,7 @@ interface DeviceColumnFiltersProps {
     agencies: string;
     lastUpdated: string;
   };
-  onFilterChange: (field: keyof typeof filters, value: string) => void;
+  onFilterChange: (field: keyof DeviceColumnFiltersProps['filters'], value: string) => void;
   onClearFilters: () => void;
 }
 
