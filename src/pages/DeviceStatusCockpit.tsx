@@ -1,11 +1,11 @@
+
 import React, { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { DeviceStatusBadge } from "@/components/devices/DeviceStatusBadge";
 import { mockDeviceData } from '@/data/mockDeviceData';
-import { Checkbox } from "@/components/ui/checkbox";
 import { DeviceColumnFilters } from '@/components/devices/DeviceColumnFilters';
+import { DeviceAgencyTabs } from '@/components/devices/DeviceAgencyTabs';
+import { DeviceStatusBanner } from '@/components/devices/DeviceStatusBanner';
+import { DeviceTable } from '@/components/devices/DeviceTable';
 
 const allAgencies = ["All Devices", "GUDID", "EUDAMED", "CUDID", "IMDIS", "Saudi-DI", "TUDID", "AusUDID"];
 const inaccessibleAgencies = ["CUDID", "Saudi-DI"];
@@ -28,9 +28,8 @@ export const DeviceStatusCockpit = () => {
 
   const handleAgencyChange = (value: string) => {
     setSelectedAgency(value);
-    setSelectedDevices([]); // Clear selection when changing agency
+    setSelectedDevices([]);
     setSearchParams(params => {
-      // Keep the status if it exists
       const newParams = new URLSearchParams();
       newParams.set('agency', value);
       if (initialStatus) {
@@ -68,10 +67,6 @@ export const DeviceStatusCockpit = () => {
     }
   };
 
-  const showCheckboxes = selectedAgency !== "All Devices";
-  const allSelected = filteredDevices.length > 0 && 
-    filteredDevices.every(device => selectedDevices.includes(device.id));
-
   const handleFilterChange = (field: keyof typeof columnFilters, value: string) => {
     setColumnFilters(prev => ({
       ...prev,
@@ -93,27 +88,17 @@ export const DeviceStatusCockpit = () => {
     <div className="container mx-auto py-6">
       <h1 className="text-2xl font-bold mb-6">Device Overview</h1>
       
-      {initialStatus && (
-        <div className="mb-6 px-4 py-3 bg-blue-50 border border-blue-200 rounded-md">
-          <p className="text-blue-700">
-            Showing devices with status: <strong>{initialStatus}</strong>
-            {selectedAgency !== "All Devices" && (
-              <span> for agency: <strong>{selectedAgency}</strong></span>
-            )}
-          </p>
-        </div>
-      )}
+      <DeviceStatusBanner 
+        status={initialStatus} 
+        selectedAgency={selectedAgency} 
+      />
       
       <div className="bg-card rounded-lg p-6">
-        <Tabs value={selectedAgency} onValueChange={handleAgencyChange} className="mb-6">
-          <TabsList className="flex flex-wrap">
-            {allAgencies.map(agency => (
-              <TabsTrigger key={agency} value={agency}>
-                {agency}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+        <DeviceAgencyTabs
+          selectedAgency={selectedAgency}
+          onAgencyChange={handleAgencyChange}
+          allAgencies={allAgencies}
+        />
 
         <DeviceColumnFilters
           filters={columnFilters}
@@ -121,77 +106,14 @@ export const DeviceStatusCockpit = () => {
           onClearFilters={handleClearFilters}
         />
 
-        <div className="border rounded-md">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                {showCheckboxes && (
-                  <TableHead className="w-12">
-                    <Checkbox 
-                      checked={allSelected}
-                      onCheckedChange={handleSelectAllDevices}
-                    />
-                  </TableHead>
-                )}
-                <TableHead>Device ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Agencies</TableHead>
-                <TableHead className="text-right">Last Updated</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isAgencyAccessible ? (
-                filteredDevices.length > 0 ? (
-                  filteredDevices.map(device => (
-                    <TableRow key={device.id}>
-                      {showCheckboxes && (
-                        <TableCell>
-                          <Checkbox 
-                            checked={selectedDevices.includes(device.id)}
-                            onCheckedChange={(checked) => handleSelectDevice(device.id, !!checked)}
-                          />
-                        </TableCell>
-                      )}
-                      <TableCell className="font-mono">{device.id}</TableCell>
-                      <TableCell>{device.name}</TableCell>
-                      <TableCell>
-                        <DeviceStatusBadge status={device.status} />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-1.5 flex-wrap">
-                          {device.agencies.map(agency => (
-                            <span
-                              key={agency}
-                              className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700"
-                            >
-                              {agency}
-                            </span>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right text-muted-foreground">
-                        {device.lastUpdated}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={showCheckboxes ? 6 : 5} className="text-center py-6">
-                      No devices found for {selectedAgency}{initialStatus ? ` with status ${initialStatus}` : ''}
-                    </TableCell>
-                  </TableRow>
-                )
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={showCheckboxes ? 6 : 5} className="text-center py-6">
-                    No access to this data
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+        <DeviceTable
+          showCheckboxes={selectedAgency !== "All Devices"}
+          selectedDevices={selectedDevices}
+          onSelectAllDevices={handleSelectAllDevices}
+          onSelectDevice={handleSelectDevice}
+          filteredDevices={filteredDevices}
+          isAgencyAccessible={isAgencyAccessible}
+        />
       </div>
     </div>
   );
