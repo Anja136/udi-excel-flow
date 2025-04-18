@@ -1,9 +1,11 @@
+
 import React, { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { DeviceStatusBadge } from "@/components/devices/DeviceStatusBadge";
 import { mockDeviceData } from '@/data/mockDeviceData';
+import { Checkbox } from "@/components/ui/checkbox";
 
 const allAgencies = ["All Devices", "GUDID", "EUDAMED", "CUDID", "IMDIS", "Saudi-DI", "TUDID", "AusUDID"];
 const inaccessibleAgencies = ["CUDID", "Saudi-DI"];
@@ -15,9 +17,11 @@ export const DeviceStatusCockpit = () => {
   const initialStatus = searchParams.get('status');
   
   const [selectedAgency, setSelectedAgency] = useState(initialAgency);
+  const [selectedDevices, setSelectedDevices] = useState<string[]>([]);
 
   const handleAgencyChange = (value: string) => {
     setSelectedAgency(value);
+    setSelectedDevices([]); // Clear selection when changing agency
     setSearchParams(params => {
       // Keep the status if it exists
       const newParams = new URLSearchParams();
@@ -36,6 +40,26 @@ export const DeviceStatusCockpit = () => {
   const filteredDevices = mockDeviceData
     .filter(device => selectedAgency === "All Devices" ? true : device.agencies.includes(selectedAgency))
     .filter(device => initialStatus ? device.status === initialStatus : true);
+
+  const handleSelectAllDevices = (checked: boolean) => {
+    if (checked) {
+      setSelectedDevices(filteredDevices.map(device => device.id));
+    } else {
+      setSelectedDevices([]);
+    }
+  };
+
+  const handleSelectDevice = (deviceId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedDevices(prev => [...prev, deviceId]);
+    } else {
+      setSelectedDevices(prev => prev.filter(id => id !== deviceId));
+    }
+  };
+
+  const showCheckboxes = selectedAgency !== "All Devices";
+  const allSelected = filteredDevices.length > 0 && 
+    filteredDevices.every(device => selectedDevices.includes(device.id));
 
   return (
     <div className="container mx-auto py-6">
@@ -67,6 +91,14 @@ export const DeviceStatusCockpit = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                {showCheckboxes && (
+                  <TableHead className="w-12">
+                    <Checkbox 
+                      checked={allSelected}
+                      onCheckedChange={handleSelectAllDevices}
+                    />
+                  </TableHead>
+                )}
                 <TableHead>Device ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Status</TableHead>
@@ -79,6 +111,14 @@ export const DeviceStatusCockpit = () => {
                 filteredDevices.length > 0 ? (
                   filteredDevices.map(device => (
                     <TableRow key={device.id}>
+                      {showCheckboxes && (
+                        <TableCell>
+                          <Checkbox 
+                            checked={selectedDevices.includes(device.id)}
+                            onCheckedChange={(checked) => handleSelectDevice(device.id, !!checked)}
+                          />
+                        </TableCell>
+                      )}
                       <TableCell className="font-mono">{device.id}</TableCell>
                       <TableCell>{device.name}</TableCell>
                       <TableCell>
@@ -103,14 +143,14 @@ export const DeviceStatusCockpit = () => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-6">
+                    <TableCell colSpan={showCheckboxes ? 6 : 5} className="text-center py-6">
                       No devices found for {selectedAgency}{initialStatus ? ` with status ${initialStatus}` : ''}
                     </TableCell>
                   </TableRow>
                 )
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-6">
+                  <TableCell colSpan={showCheckboxes ? 6 : 5} className="text-center py-6">
                     No access to this data
                   </TableCell>
                 </TableRow>
