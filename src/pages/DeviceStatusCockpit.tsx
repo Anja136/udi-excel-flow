@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,8 +19,13 @@ export const DeviceStatusCockpit = () => {
   const handleAgencyChange = (value: string) => {
     setSelectedAgency(value);
     setSearchParams(params => {
-      params.set('agency', value);
-      return params;
+      // Keep the status if it exists
+      const newParams = new URLSearchParams();
+      newParams.set('agency', value);
+      if (initialStatus) {
+        newParams.set('status', initialStatus);
+      }
+      return newParams;
     });
   };
 
@@ -36,6 +40,17 @@ export const DeviceStatusCockpit = () => {
   return (
     <div className="container mx-auto py-6">
       <h1 className="text-2xl font-bold mb-6">Device Overview</h1>
+      
+      {initialStatus && (
+        <div className="mb-6 px-4 py-3 bg-blue-50 border border-blue-200 rounded-md">
+          <p className="text-blue-700">
+            Showing devices with status: <strong>{initialStatus}</strong>
+            {selectedAgency !== "All Devices" && (
+              <span> for agency: <strong>{selectedAgency}</strong></span>
+            )}
+          </p>
+        </div>
+      )}
       
       <div className="bg-card rounded-lg p-6">
         <Tabs value={selectedAgency} onValueChange={handleAgencyChange} className="mb-6">
@@ -89,7 +104,7 @@ export const DeviceStatusCockpit = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center py-6">
-                      No devices found for {selectedAgency}
+                      No devices found for {selectedAgency}{initialStatus ? ` with status ${initialStatus}` : ''}
                     </TableCell>
                   </TableRow>
                 )
