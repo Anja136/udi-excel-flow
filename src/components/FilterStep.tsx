@@ -247,8 +247,7 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
           
           <DeviceTable
             filteredDevices={filteredDevicesForTable}
-            selectAll={selectAll}
-            onSelectAll={handleSelectAll}
+            onSelectAllDevices={handleSelectAll}
             onSelectDevice={handleSelectDevice}
             showCheckboxes={true}
             isAgencyAccessible={true}
