@@ -301,7 +301,7 @@ export const mockDeviceData: DeviceDataWithAgencies[] = [
     id: "UDI-DI-00004",
     name: "Blood Glucose Monitor G400",
     status: "Needs Update",
-    agencies: ["GUDID", "IMDIS"],
+    agencies: ["IMDIS"],
     lastUpdated: "Apr 12, 2025, 02:20 PM"
   },
   {
@@ -486,4 +486,3 @@ export const mockDeviceData: DeviceDataWithAgencies[] = [
     lastUpdated: "Mar 16, 2025, 03:45 PM"
   }
 ];
-

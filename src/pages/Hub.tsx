@@ -17,7 +17,7 @@ const Hub = () => {
         created: 4,
         processed: 8,
         submitted: 12,
-        needsUpdate: 4
+        needsUpdate: 4  // Keeping consistent with the Agency Hub screenshot (4)
       }
     },
     {

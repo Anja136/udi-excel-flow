@@ -7,15 +7,17 @@ interface SearchBarProps {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
   placeholder?: string;
+  className?: string;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
   searchTerm,
   setSearchTerm,
-  placeholder = "Search devices..."
+  placeholder = "Search devices...",
+  className = "flex-1"
 }) => {
   return (
-    <div className="relative flex-1">
+    <div className={`relative ${className}`}>
       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         placeholder={placeholder}

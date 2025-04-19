@@ -15,23 +15,27 @@ const StatusBadge = ({ label, count, className = '', agency }: StatusBadgeProps)
   
   // Get color classes and tooltip based on status label
   const getStatusInfo = (label: string) => {
-    switch (label) {
-      case 'Created':
+    // Normalize the label to handle variations
+    const normalizedLabel = label.toLowerCase().replace(/\s+/g, '');
+    
+    switch (normalizedLabel) {
+      case 'created':
         return {
           colorClasses: "bg-blue-100 text-blue-700",
           tooltip: 'Data uploaded but not yet imported'
         };
-      case 'Processed':
+      case 'processed':
         return {
           colorClasses: "bg-yellow-100 text-yellow-700",
           tooltip: 'Data imported but not yet submitted'
         };
-      case 'Submitted':
+      case 'submitted':
         return {
           colorClasses: "bg-green-100 text-green-700",
           tooltip: 'Submitted to agency and successfully registered'
         };
-      case 'Needs Update':
+      case 'needsupdate':
+      case 'needupdate':
         return {
           colorClasses: "bg-red-100 text-red-700",
           tooltip: 'Submitted to agency with error'
@@ -50,7 +54,9 @@ const StatusBadge = ({ label, count, className = '', agency }: StatusBadgeProps)
     const params = new URLSearchParams();
     if (agency) params.set('agency', agency);
     // Ensure consistent status naming between Hub and Cockpit
-    params.set('status', label);
+    // Standardize to "Needs Update" format for consistency
+    const normalizedLabel = label.toLowerCase().includes('need') ? 'Needs Update' : label;
+    params.set('status', normalizedLabel);
     navigate(`/devices?${params.toString()}`);
   };
 
