@@ -228,10 +228,13 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
           </div>
           
           <DeviceTable
-            devices={filteredDevices}
+            filteredDevices={filteredDevices}
             selectAll={selectAll}
             onSelectAll={handleSelectAll}
             onSelectDevice={handleSelectDevice}
+            showCheckboxes={true}
+            isAgencyAccessible={true}
+            selectedDevices={devices.filter(d => d.selected).map(d => d.id)}
           />
         </CardContent>
         
