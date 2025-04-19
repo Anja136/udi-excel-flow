@@ -41,9 +41,18 @@ export const DeviceStatusCockpit = () => {
 
   const isAgencyAccessible = selectedAgency === "All Devices" || !inaccessibleAgencies.includes(selectedAgency);
 
+  // Normalized the status match to handle variations like "Needs Update" vs "Need Update"
+  const normalizeStatus = (status: string) => {
+    return status.toLowerCase().replace(/\s+/g, '');
+  };
+
   const filteredDevices = mockDeviceData
     .filter(device => selectedAgency === "All Devices" ? true : device.agencies.includes(selectedAgency))
-    .filter(device => initialStatus ? device.status === initialStatus : true)
+    .filter(device => {
+      if (!initialStatus) return true;
+      // Use normalized status comparison to catch minor variations
+      return normalizeStatus(device.status) === normalizeStatus(initialStatus);
+    })
     .filter(device => !columnFilters.deviceId || device.id.toLowerCase().includes(columnFilters.deviceId.toLowerCase()))
     .filter(device => !columnFilters.name || device.name.toLowerCase().includes(columnFilters.name.toLowerCase()))
     .filter(device => !columnFilters.status || device.status.toLowerCase().includes(columnFilters.status.toLowerCase()))

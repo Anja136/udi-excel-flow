@@ -49,6 +49,7 @@ const StatusBadge = ({ label, count, className = '', agency }: StatusBadgeProps)
   const handleClick = () => {
     const params = new URLSearchParams();
     if (agency) params.set('agency', agency);
+    // Ensure consistent status naming between Hub and Cockpit
     params.set('status', label);
     navigate(`/devices?${params.toString()}`);
   };

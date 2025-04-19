@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +15,16 @@ interface FilterStepProps {
   config: ConfigData;
   onNext: (downloadableInfo?: { total: number, downloadable: number }) => void;
 }
+
+const convertDeviceForTable = (device: DeviceData) => {
+  return {
+    ...device,
+    status: device.srvStatus === 'completed' ? 'Submitted' : 
+            device.srvStatus === 'in progress' ? 'Processed' : 
+            device.srvStatus === 'started' ? 'Created' : 'Needs Update',
+    agencies: [device.manufacturerName], // Add a placeholder agency
+  };
+};
 
 const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,6 +73,9 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
     return matchesSearch && matchesDeviceId && matchesMaterial && 
            matchesDeviceGroup && matchesSrvStatus && matchesTimeFilter;
   });
+  
+  const filteredDevicesForTable = filteredDevices.map(convertDeviceForTable);
+  const selectedDeviceIds = devices.filter(d => d.selected).map(d => d.id);
   
   useEffect(() => {
     const selectedDevices = devices.filter(d => d.selected);
@@ -228,13 +240,13 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
           </div>
           
           <DeviceTable
-            filteredDevices={filteredDevices}
+            filteredDevices={filteredDevicesForTable}
             selectAll={selectAll}
             onSelectAll={handleSelectAll}
             onSelectDevice={handleSelectDevice}
             showCheckboxes={true}
             isAgencyAccessible={true}
-            selectedDevices={devices.filter(d => d.selected).map(d => d.id)}
+            selectedDevices={selectedDeviceIds}
           />
         </CardContent>
         
