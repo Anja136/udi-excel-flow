@@ -2,8 +2,25 @@
 import React from 'react';
 import { type Agency } from '@/types/agency';
 import AgencyCard from '@/components/agency/AgencyCard';
+import { mockDeviceData } from '@/data/mockDeviceData';
 
 const Hub = () => {
+  // Calculate actual device counts from mockDeviceData
+  const calculateAgencyStatus = (agencyName: string) => {
+    // Filter devices for this agency
+    const agencyDevices = mockDeviceData.filter(device => 
+      device.agencies.includes(agencyName)
+    );
+    
+    // Count devices by status
+    return {
+      created: agencyDevices.filter(device => device.status === 'Created').length,
+      processed: agencyDevices.filter(device => device.status === 'Processed').length,
+      submitted: agencyDevices.filter(device => device.status === 'Submitted').length,
+      needsUpdate: agencyDevices.filter(device => device.status === 'Needs Update').length
+    };
+  };
+  
   // Define agencies in the specified order: GUDID, EUDAMED, CUDID, IMDIS, Saudi-DI, TUDID, AusUDID
   const agencies: Agency[] = [
     {
@@ -11,28 +28,18 @@ const Hub = () => {
       name: "U.S. FDA Global Unique Device Identification Database",
       shortName: "GUDID",
       description: "U.S. FDA Global Unique Device Identification Database",
-      totalDevices: 28,
+      totalDevices: mockDeviceData.filter(device => device.agencies.includes("GUDID")).length,
       color: "#0EA5E9",
-      status: {
-        created: 4,
-        processed: 8,
-        submitted: 12,
-        needsUpdate: 4  // Keeping consistent with the Agency Hub screenshot (4)
-      }
+      status: calculateAgencyStatus("GUDID")
     },
     {
       id: "eudamed",
       name: "European Database on Medical Devices",
       shortName: "EUDAMED",
       description: "European Database on Medical Devices",
-      totalDevices: 24,
+      totalDevices: mockDeviceData.filter(device => device.agencies.includes("EUDAMED")).length,
       color: "#2563EB",
-      status: {
-        created: 6,
-        processed: 6,
-        submitted: 8,
-        needsUpdate: 4
-      }
+      status: calculateAgencyStatus("EUDAMED")
     },
     {
       id: "cudid",
@@ -54,15 +61,10 @@ const Hub = () => {
       name: "South Korean UDI Database",
       shortName: "IMDIS",
       description: "South Korean UDI Database",
-      totalDevices: 20,
+      totalDevices: mockDeviceData.filter(device => device.agencies.includes("IMDIS")).length,
       color: "#EC4899",
       flag: "/flags/kr.png",
-      status: {
-        created: 3,
-        processed: 5,
-        submitted: 8,
-        needsUpdate: 4
-      }
+      status: calculateAgencyStatus("IMDIS")
     },
     {
       id: "saudi-di",
@@ -85,30 +87,20 @@ const Hub = () => {
       name: "Taiwanese UDI Database",
       shortName: "TUDID",
       description: "Taiwanese UDI Database",
-      totalDevices: 15,
+      totalDevices: mockDeviceData.filter(device => device.agencies.includes("TUDID")).length,
       color: "#EF4444",
       flag: "/flags/tw.png",
-      status: {
-        created: 4,
-        processed: 3,
-        submitted: 5,
-        needsUpdate: 3
-      }
+      status: calculateAgencyStatus("TUDID")
     },
     {
       id: "ausudid",
       name: "Australian Unique Device Identification Database",
       shortName: "AusUDID",
       description: "Australian Unique Device Identification Database",
-      totalDevices: 18,
+      totalDevices: mockDeviceData.filter(device => device.agencies.includes("AusUDID")).length,
       color: "#F59E0B",
       flag: "/flags/au.png",
-      status: {
-        created: 3,
-        processed: 4,
-        submitted: 7,
-        needsUpdate: 4
-      }
+      status: calculateAgencyStatus("AusUDID")
     }
   ];
 

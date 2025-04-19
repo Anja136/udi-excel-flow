@@ -36,6 +36,7 @@ const StatusBadge = ({ label, count, className = '', agency }: StatusBadgeProps)
         };
       case 'needsupdate':
       case 'needupdate':
+      case 'needupdates':
         return {
           colorClasses: "bg-red-100 text-red-700",
           tooltip: 'Submitted to agency with error'
@@ -53,6 +54,7 @@ const StatusBadge = ({ label, count, className = '', agency }: StatusBadgeProps)
   const handleClick = () => {
     const params = new URLSearchParams();
     if (agency) params.set('agency', agency);
+    
     // Ensure consistent status naming between Hub and Cockpit
     // Standardize to "Needs Update" format for consistency
     const normalizedLabel = label.toLowerCase().includes('need') ? 'Needs Update' : label;
