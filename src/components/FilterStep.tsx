@@ -9,6 +9,7 @@ import { DeviceFilters } from './devices/DeviceFilters';
 import { DeviceTable } from './devices/DeviceTable';
 import { DeviceData } from '@/types/device';
 import { generateMockDevices, isDeviceDownloadable } from '@/utils/deviceUtils';
+import { DeviceDataWithAgencies } from '@/data/mockDeviceData';
 
 interface FilterStepProps {
   onPrev: () => void;
@@ -16,13 +17,18 @@ interface FilterStepProps {
   onNext: (downloadableInfo?: { total: number, downloadable: number }) => void;
 }
 
-const convertDeviceForTable = (device: DeviceData) => {
+const convertDeviceForTable = (device: DeviceData): DeviceDataWithAgencies => {
+  const status: 'Submitted' | 'Processed' | 'Created' | 'Needs Update' = 
+    device.srvStatus === 'completed' ? 'Submitted' : 
+    device.srvStatus === 'in progress' ? 'Processed' : 
+    device.srvStatus === 'started' ? 'Created' : 'Needs Update';
+    
   return {
-    ...device,
-    status: device.srvStatus === 'completed' ? 'Submitted' : 
-            device.srvStatus === 'in progress' ? 'Processed' : 
-            device.srvStatus === 'started' ? 'Created' : 'Needs Update',
+    id: device.id,
+    name: device.name,
+    status: status,
     agencies: [device.manufacturerName], // Add a placeholder agency
+    lastUpdated: device.lastUpdated
   };
 };
 
