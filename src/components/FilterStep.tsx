@@ -10,6 +10,7 @@ import { useDeviceFiltering } from '@/hooks/useDeviceFiltering';
 import { convertDeviceForTable } from '@/utils/deviceConversion';
 import { DownloadSection } from './devices/DownloadSection';
 import { StatusLegend } from './devices/StatusLegend';
+import { generateMockDevices } from '@/utils/deviceUtils';
 
 interface FilterStepProps {
   onPrev: () => void;
