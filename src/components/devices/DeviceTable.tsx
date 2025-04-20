@@ -2,6 +2,7 @@
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DeviceStatusBadge } from "@/components/devices/DeviceStatusBadge";
+import { SrvStatusIcon } from "@/components/devices/SrvStatusIcon";
 import { mockDeviceData } from '@/data/mockDeviceData';
 
 interface DeviceTableProps {
@@ -40,6 +41,7 @@ export const DeviceTable = ({
             <TableHead>Device ID</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>SRV Status</TableHead>
             <TableHead>Agencies</TableHead>
             <TableHead className="text-right">Last Updated</TableHead>
           </TableRow>
@@ -63,6 +65,9 @@ export const DeviceTable = ({
                     <DeviceStatusBadge status={device.status} />
                   </TableCell>
                   <TableCell>
+                    <SrvStatusIcon status={device.srvStatus} isDownloadable={device.isDownloadable} />
+                  </TableCell>
+                  <TableCell>
                     <div className="flex gap-1.5 flex-wrap">
                       {device.agencies.map(agency => (
                         <span
@@ -81,14 +86,14 @@ export const DeviceTable = ({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={showCheckboxes ? 6 : 5} className="text-center py-6">
+                <TableCell colSpan={showCheckboxes ? 7 : 6} className="text-center py-6">
                   No devices found
                 </TableCell>
               </TableRow>
             )
           ) : (
             <TableRow>
-              <TableCell colSpan={showCheckboxes ? 6 : 5} className="text-center py-6">
+              <TableCell colSpan={showCheckboxes ? 7 : 6} className="text-center py-6">
                 No access to this data
               </TableCell>
             </TableRow>

@@ -19,6 +19,8 @@ interface DeviceFiltersProps {
   setDeviceGroupFilter: (value: string) => void;
   srvFilter: string;
   setSrvFilter: (value: string) => void;
+  statusFilter: string;
+  setStatusFilter: (value: string) => void;
   totalFilteredDevices: number;
   downloadableFilteredDevices: number;
 }
@@ -36,6 +38,8 @@ export const DeviceFilters = ({
   setDeviceGroupFilter,
   srvFilter,
   setSrvFilter,
+  statusFilter,
+  setStatusFilter,
   totalFilteredDevices,
   downloadableFilteredDevices,
 }: DeviceFiltersProps) => {
@@ -64,6 +68,8 @@ export const DeviceFilters = ({
       <StatusFilter
         srvFilter={srvFilter}
         setSrvFilter={setSrvFilter}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
       />
 
       <FilterInfoBanner

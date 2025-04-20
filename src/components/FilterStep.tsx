@@ -42,6 +42,7 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
   } = useDeviceFiltering(config);
 
   const [showDownloadWarning, setShowDownloadWarning] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   
   useEffect(() => {
     const selectedDevices = devices.filter(d => d.selected);
@@ -120,7 +121,14 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
     }, 1000);
   };
 
-  const filteredDevicesForTable = filteredDevices.map(convertDeviceForTable);
+  const filteredDevicesForTable = filteredDevices
+    .filter(device => {
+      const matchesStatus = statusFilter === "all" || 
+        device.status.toLowerCase() === statusFilter.toLowerCase();
+      return matchesStatus;
+    })
+    .map(convertDeviceForTable);
+
   const selectedDeviceIds = devices.filter(d => d.selected).map(d => d.id);
   const totalFilteredDevices = filteredDevices.length;
   const downloadableFilteredDevices = filteredDevices.filter(d => d.isDownloadable).length;
@@ -151,6 +159,8 @@ const FilterStep: React.FC<FilterStepProps> = ({ onPrev, config, onNext }) => {
             setDeviceGroupFilter={setDeviceGroupFilter}
             srvFilter={srvFilter}
             setSrvFilter={setSrvFilter}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
             totalFilteredDevices={totalFilteredDevices}
             downloadableFilteredDevices={downloadableFilteredDevices}
           />
