@@ -1,8 +1,6 @@
-
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
-
-export type DeviceStatus = 'Created' | 'Processed' | 'Submitted' | 'Needs Update';
+import { DeviceStatus } from '@/types/device';
 
 interface DeviceStatusBadgeProps {
   status: DeviceStatus;

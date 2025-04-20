@@ -15,7 +15,7 @@ export interface DeviceReportSummary {
     id: string;
     action: string;
     timestamp: string;
-    status: string;
+    status: DeviceStatus;
     deviceId: string;
     deviceName: string;
     region: string;
@@ -120,15 +120,18 @@ export const useDeviceReportData = () => {
         }
       });
 
-      const recentActivity = devicesWithRegion.slice(0, 20).map(device => ({
-        id: `${device.id}-${Date.now()}`,
-        action: ['Submitted', 'Updated', 'Approved', 'Rejected', 'Validated'][Math.floor(Math.random() * 5)],
-        timestamp: device.lastUpdated,
-        status: device.status,
-        deviceId: device.deviceIdentifier,
-        deviceName: device.name,
-        region: device.region
-      })).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      const recentActivity = devicesWithRegion.slice(0, 20).map(device => {
+        const actions = ['Submitted', 'Updated', 'Approved', 'Rejected', 'Validated'];
+        return {
+          id: `${device.id}-${Date.now()}`,
+          action: actions[Math.floor(Math.random() * actions.length)],
+          timestamp: device.lastUpdated,
+          status: device.status as DeviceStatus,
+          deviceId: device.deviceIdentifier,
+          deviceName: device.name,
+          region: device.region
+        };
+      }).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
       setDevices(devicesWithRegion);
       setSummary({
