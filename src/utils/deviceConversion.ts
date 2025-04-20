@@ -11,9 +11,10 @@ export const convertDeviceForTable = (device: DeviceData): DeviceDataWithAgencie
   return {
     id: device.id,
     name: device.name,
-    status: status,
+    status: device.status || status,
     agencies: [device.manufacturerName],
-    lastUpdated: device.lastUpdated
+    lastUpdated: device.lastUpdated,
+    srvStatus: device.srvStatus,
+    isDownloadable: device.isDownloadable
   };
 };
-

@@ -1,5 +1,6 @@
 
 import { DeviceStatus } from '@/types/agency';
+import { SrvStatus } from '@/types/device';
 
 export interface DeviceDataWithAgencies {
   id: string;
@@ -7,6 +8,8 @@ export interface DeviceDataWithAgencies {
   status: 'Submitted' | 'Processed' | 'Needs Update' | 'Created';
   agencies: string[];
   lastUpdated: string;
+  srvStatus: SrvStatus;
+  isDownloadable: boolean;
 }
 
 export const mockDeviceData: DeviceDataWithAgencies[] = [
