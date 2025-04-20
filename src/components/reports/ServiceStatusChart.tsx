@@ -16,27 +16,27 @@ export const ServiceStatusChart = ({ devices }: ServiceStatusChartProps) => {
   }, {} as Record<SrvStatus, number>);
   
   const data = [
-    { name: 'Completed', value: srvStatusCounts['completed'] || 0, fill: '#4CAF50' },
-    { name: 'In Progress', value: srvStatusCounts['in progress'] || 0, fill: '#2196F3' },
-    { name: 'Started', value: srvStatusCounts['started'] || 0, fill: '#FFC107' },
-    { name: 'None', value: srvStatusCounts['none'] || 0, fill: '#9E9E9E' },
+    { name: 'Completed', value: srvStatusCounts['completed'] || 0, fill: '#8B5CF6' },
+    { name: 'In Progress', value: srvStatusCounts['in progress'] || 0, fill: '#A78BFA' },
+    { name: 'Started', value: srvStatusCounts['started'] || 0, fill: '#C4B5FD' },
+    { name: 'None', value: srvStatusCounts['none'] || 0, fill: '#EDE9FE' }
   ];
 
-  const COLORS = ['#4CAF50', '#2196F3', '#FFC107', '#9E9E9E'];
+  const COLORS = ['#8B5CF6', '#A78BFA', '#C4B5FD', '#EDE9FE'];
 
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>SRV Status Distribution</CardTitle>
+        <CardTitle className="text-lg font-medium">SRV Status Distribution</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-80">
           <ChartContainer
             config={{
-              Completed: { color: "#4CAF50" },
-              "In Progress": { color: "#2196F3" },
-              Started: { color: "#FFC107" },
-              None: { color: "#9E9E9E" },
+              Completed: { color: "#8B5CF6" },
+              "In Progress": { color: "#A78BFA" },
+              Started: { color: "#C4B5FD" },
+              None: { color: "#EDE9FE" },
             }}
           >
             <ResponsiveContainer width="100%" height="100%">

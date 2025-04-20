@@ -17,25 +17,25 @@ export const DeviceStatusChart = ({ devices, title = "Device Status Overview" }:
   }, {} as Record<string, number>);
   
   const data = [
-    { name: 'Submitted', value: statusCounts['Submitted'] || 0, fill: '#4CAF50' },
-    { name: 'Processed', value: statusCounts['Processed'] || 0, fill: '#2196F3' },
-    { name: 'Created', value: statusCounts['Created'] || 0, fill: '#FFC107' },
-    { name: 'Needs Update', value: statusCounts['Needs Update'] || 0, fill: '#F44336' },
+    { name: 'Submitted', value: statusCounts['Submitted'] || 0, fill: '#8B5CF6' },
+    { name: 'Processed', value: statusCounts['Processed'] || 0, fill: '#A78BFA' },
+    { name: 'Created', value: statusCounts['Created'] || 0, fill: '#C4B5FD' },
+    { name: 'Needs Update', value: statusCounts['Needs Update'] || 0, fill: '#EDE9FE' }
   ];
 
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="text-lg font-medium">{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-80">
           <ChartContainer
             config={{
-              Submitted: { color: "#4CAF50" },
-              Processed: { color: "#2196F3" },
-              Created: { color: "#FFC107" },
-              "Needs Update": { color: "#F44336" },
+              Submitted: { color: "#8B5CF6" },
+              Processed: { color: "#A78BFA" },
+              Created: { color: "#C4B5FD" },
+              "Needs Update": { color: "#EDE9FE" },
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
