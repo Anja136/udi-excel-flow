@@ -18,7 +18,7 @@ const AppSidebar = () => {
     icon: HardDrive
   }, {
     title: "Reports",
-    path: "/reports",
+    path: "/report",
     icon: BarChart3
   }];
 
