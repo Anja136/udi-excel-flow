@@ -17,3 +17,6 @@ export interface DeviceData {
 }
 
 export type SrvStatus = 'started' | 'in progress' | 'completed' | 'none';
+
+// Add the DeviceStatus type export
+export type DeviceStatus = 'Submitted' | 'Processed' | 'Created' | 'Needs Update';
