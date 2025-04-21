@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,14 +6,15 @@ import UdiRegionFilter from '@/components/reports/UdiRegionFilter';
 import UdiRegionCard from '@/components/reports/UdiRegionCard';
 import UdiMapLegend from '@/components/reports/UdiMapLegend';
 import { udiRegionsData } from '@/data/udiRegionsData';
-import { UdiRegion, RegionFilter } from '@/types/udiRegion';
+import { UdiRegion, RegionFilter, UdiRegistrationStatus } from '@/types/udiRegion';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from '@/components/ui/badge';
 import { Flag, Info, Globe, MapPin } from 'lucide-react';
 import { getStatusText } from '@/data/udiRegionsData';
 
 const Report = () => {
-  const [regions] = useState<UdiRegion[]>(udiRegionsData);
+  // Initialize with a proper empty array to avoid undefined values
+  const [regions] = useState<UdiRegion[]>(udiRegionsData || []);
   const [selectedRegion, setSelectedRegion] = useState<UdiRegion | null>(null);
   const [filter, setFilter] = useState<RegionFilter>({
     regions: [],

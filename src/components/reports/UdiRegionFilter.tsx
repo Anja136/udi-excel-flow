@@ -37,21 +37,25 @@ const UdiRegionFilter = ({ regions, filter, setFilter }: UdiRegionFilterProps) =
   const [regionsOpen, setRegionsOpen] = React.useState(false);
   const [statusOpen, setStatusOpen] = React.useState(false);
 
+  // Ensure we have arrays initialized
+  const regionsList = regions || [];
+  const { regions: selectedRegions = [], status: selectedStatuses = [] } = filter || { regions: [], status: [] };
+
   const handleRegionChange = (regionId: string) => {
     setFilter({
       ...filter,
-      regions: filter.regions.includes(regionId)
-        ? filter.regions.filter(r => r !== regionId)
-        : [...filter.regions, regionId]
+      regions: selectedRegions.includes(regionId)
+        ? selectedRegions.filter(r => r !== regionId)
+        : [...selectedRegions, regionId]
     });
   };
 
   const handleStatusChange = (status: UdiRegistrationStatus) => {
     setFilter({
       ...filter,
-      status: filter.status.includes(status)
-        ? filter.status.filter(s => s !== status)
-        : [...filter.status, status]
+      status: selectedStatuses.includes(status)
+        ? selectedStatuses.filter(s => s !== status)
+        : [...selectedStatuses, status]
     });
   };
 
@@ -69,9 +73,9 @@ const UdiRegionFilter = ({ regions, filter, setFilter }: UdiRegionFilterProps) =
           <PopoverTrigger asChild>
             <Button variant="outline" role="combobox" aria-expanded={regionsOpen} className="justify-between">
               Regions
-              {filter.regions.length > 0 && (
+              {selectedRegions.length > 0 && (
                 <Badge variant="secondary" className="ml-2 rounded-sm px-1 font-normal">
-                  {filter.regions.length}
+                  {selectedRegions.length}
                 </Badge>
               )}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -82,13 +86,13 @@ const UdiRegionFilter = ({ regions, filter, setFilter }: UdiRegionFilterProps) =
               <CommandInput placeholder="Search regions..." />
               <CommandEmpty>No region found.</CommandEmpty>
               <CommandGroup>
-                {regions.map((region) => (
+                {regionsList.map((region) => (
                   <CommandItem
                     key={region.id}
                     onSelect={() => handleRegionChange(region.id)}
                   >
                     <Checkbox
-                      checked={filter.regions.includes(region.id)}
+                      checked={selectedRegions.includes(region.id)}
                       onCheckedChange={() => handleRegionChange(region.id)}
                       className="mr-2 h-4 w-4"
                       id={`region-${region.id}`}
@@ -97,7 +101,7 @@ const UdiRegionFilter = ({ regions, filter, setFilter }: UdiRegionFilterProps) =
                     <Check
                       className={cn(
                         "ml-auto h-4 w-4",
-                        filter.regions.includes(region.id) ? "opacity-100" : "opacity-0"
+                        selectedRegions.includes(region.id) ? "opacity-100" : "opacity-0"
                       )}
                     />
                   </CommandItem>
@@ -111,9 +115,9 @@ const UdiRegionFilter = ({ regions, filter, setFilter }: UdiRegionFilterProps) =
           <PopoverTrigger asChild>
             <Button variant="outline" role="combobox" aria-expanded={statusOpen} className="justify-between">
               Status
-              {filter.status.length > 0 && (
+              {selectedStatuses.length > 0 && (
                 <Badge variant="secondary" className="ml-2 rounded-sm px-1 font-normal">
-                  {filter.status.length}
+                  {selectedStatuses.length}
                 </Badge>
               )}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -130,7 +134,7 @@ const UdiRegionFilter = ({ regions, filter, setFilter }: UdiRegionFilterProps) =
                     onSelect={() => handleStatusChange(status.value)}
                   >
                     <Checkbox
-                      checked={filter.status.includes(status.value)}
+                      checked={selectedStatuses.includes(status.value)}
                       onCheckedChange={() => handleStatusChange(status.value)}
                       className="mr-2 h-4 w-4"
                       id={`status-${status.value}`}
@@ -139,7 +143,7 @@ const UdiRegionFilter = ({ regions, filter, setFilter }: UdiRegionFilterProps) =
                     <Check
                       className={cn(
                         "ml-auto h-4 w-4",
-                        filter.status.includes(status.value) ? "opacity-100" : "opacity-0"
+                        selectedStatuses.includes(status.value) ? "opacity-100" : "opacity-0"
                       )}
                     />
                   </CommandItem>
@@ -150,7 +154,7 @@ const UdiRegionFilter = ({ regions, filter, setFilter }: UdiRegionFilterProps) =
         </Popover>
       </div>
 
-      {(filter.regions.length > 0 || filter.status.length > 0) && (
+      {(selectedRegions.length > 0 || selectedStatuses.length > 0) && (
         <Button variant="ghost" size="sm" onClick={clearFilters} className="ml-auto">
           Clear Filters
         </Button>
