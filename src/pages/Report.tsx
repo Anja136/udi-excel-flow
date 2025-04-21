@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import WorldMap from '@/components/reports/WorldMap';
+import StaticWorldMap from '@/components/reports/StaticWorldMap';
 import UdiRegionFilter from '@/components/reports/UdiRegionFilter';
 import UdiRegionCard from '@/components/reports/UdiRegionCard';
 import UdiMapLegend from '@/components/reports/UdiMapLegend';
@@ -78,7 +78,7 @@ const Report = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-0 relative">
-                <WorldMap regions={regions} filter={filter} />
+                <StaticWorldMap regions={regions} filter={filter} />
                 <UdiMapLegend />
               </CardContent>
             </Card>
