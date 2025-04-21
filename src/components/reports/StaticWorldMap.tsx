@@ -24,7 +24,7 @@ const StaticWorldMap = ({ regions, filter }: StaticWorldMapProps) => {
   });
 
   return (
-    <div className="relative w-full h-[600px] rounded-lg overflow-hidden border shadow-md bg-[#1A1F2C]">
+    <div className="relative w-full h-[600px] rounded-lg overflow-hidden border shadow-md bg-[#0b1628]">
       <WorldMapSvg 
         regions={filteredRegions} 
         onRegionClick={(region) => {

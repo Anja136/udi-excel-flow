@@ -1,4 +1,3 @@
-
 import { UdiRegion } from '@/types/udiRegion';
 
 export const udiRegionsData: UdiRegion[] = [
@@ -9,7 +8,7 @@ export const udiRegionsData: UdiRegion[] = [
     database: 'GUDID',
     status: 'REQUIRED',
     color: '#63e0c7', // Teal
-    coordinates: [-98.5795, 39.8283],
+    coordinates: [349, 345],
     description: 'FDA Global Unique Device Identification Database',
     implementationDate: '2013',
     flagCode: 'us'
@@ -21,7 +20,7 @@ export const udiRegionsData: UdiRegion[] = [
     database: 'EUDAMED',
     status: 'UPCOMING',
     color: '#63e0c7',
-    coordinates: [10.4515, 51.1657],
+    coordinates: [555, 170],
     description: 'European Database on Medical Devices',
     implementationDate: '2026',
     flagCode: 'eu'
@@ -33,7 +32,7 @@ export const udiRegionsData: UdiRegion[] = [
     database: 'IMDIS',
     status: 'REQUIRED',
     color: '#63e0c7',
-    coordinates: [127.7669, 35.9078],
+    coordinates: [870, 180],
     description: 'Integrated Medical Device Information System',
     implementationDate: '2019',
     flagCode: 'kr'
@@ -45,7 +44,7 @@ export const udiRegionsData: UdiRegion[] = [
     database: 'TUDID',
     status: 'REQUIRED',
     color: '#63e0c7',
-    coordinates: [120.9605, 23.6978],
+    coordinates: [860, 240],
     description: 'Taiwan Unique Device Identification Database',
     implementationDate: '2021',
     flagCode: 'tw'
@@ -57,7 +56,7 @@ export const udiRegionsData: UdiRegion[] = [
     database: 'CUDID',
     status: 'REQUIRED',
     color: '#63e0c7',
-    coordinates: [104.1954, 35.8617],
+    coordinates: [770, 200],
     description: 'China Unique Device Identification Database',
     implementationDate: '2019',
     flagCode: 'cn'
@@ -69,7 +68,7 @@ export const udiRegionsData: UdiRegion[] = [
     database: 'AusUDID',
     status: 'IN_PROCESS',
     color: '#b8b8b8', // Gray for in process
-    coordinates: [133.7751, -25.2744],
+    coordinates: [980, 460],
     description: 'Australian Unique Device Identification Database',
     implementationDate: 'In development',
     flagCode: 'au'
@@ -81,7 +80,7 @@ export const udiRegionsData: UdiRegion[] = [
     database: 'Saudi-DI',
     status: 'REQUIRED',
     color: '#63e0c7',
-    coordinates: [45.0792, 23.8859],
+    coordinates: [610, 260],
     description: 'Saudi Arabia Device Identification System',
     implementationDate: '2020',
     flagCode: 'sa'
