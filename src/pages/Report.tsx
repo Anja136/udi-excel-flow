@@ -1,84 +1,168 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useDeviceReportData } from '@/hooks/useDeviceReportData';
-import { KeyMetricsGrid, createDefaultMetrics } from '@/components/reports/KeyMetricsGrid';
-import { DashboardHeader } from '@/components/reports/DashboardHeader';
-import { DashboardOverview } from '@/components/reports/DashboardOverview';
-import { DetailedAnalysis } from '@/components/reports/DetailedAnalysis';
-import { Skeleton } from "@/components/ui/skeleton";
+import WorldMap from '@/components/reports/WorldMap';
+import UdiRegionFilter from '@/components/reports/UdiRegionFilter';
+import UdiRegionCard from '@/components/reports/UdiRegionCard';
+import UdiMapLegend from '@/components/reports/UdiMapLegend';
+import { udiRegionsData } from '@/data/udiRegionsData';
+import { UdiRegion, RegionFilter } from '@/types/udiRegion';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from '@/components/ui/badge';
+import { Flag, Info, Globe, MapPin } from 'lucide-react';
+import { getStatusText } from '@/data/udiRegionsData';
 
 const Report = () => {
-  const { devices, summary, isLoading, error } = useDeviceReportData();
+  const [regions] = useState<UdiRegion[]>(udiRegionsData);
+  const [selectedRegion, setSelectedRegion] = useState<UdiRegion | null>(null);
+  const [filter, setFilter] = useState<RegionFilter>({
+    regions: [],
+    status: []
+  });
+  const [open, setOpen] = useState(false);
 
-  // Generate additional data for authority status breakdown
-  const statusByAuthority: Record<string, Record<string, number>> = {};
-  if (devices.length > 0) {
-    devices.forEach(device => {
-      const authority = device.deviceIdentifier.split('-')[0];
-      if (!statusByAuthority[authority]) {
-        statusByAuthority[authority] = {};
-      }
-      statusByAuthority[authority][device.status] = (statusByAuthority[authority][device.status] || 0) + 1;
-    });
-  }
+  // Filter regions based on selected filters
+  const filteredRegions = regions.filter(region => {
+    const statusMatch = filter.status.length === 0 || filter.status.includes(region.status);
+    const regionMatch = filter.regions.length === 0 || filter.regions.includes(region.id);
+    return statusMatch && regionMatch;
+  });
 
-  if (error) {
-    return (
-      <div className="container mx-auto py-6 px-4">
-        <div className="bg-destructive/15 text-destructive px-4 py-3 rounded-lg">
-          <h2 className="text-lg font-semibold">Error Loading Report Data</h2>
-          <p>{error.message}</p>
-        </div>
-      </div>
-    );
-  }
+  // Handle region selection
+  const handleRegionSelect = (region: UdiRegion) => {
+    setSelectedRegion(region);
+    setOpen(true);
+  };
 
-  const keyMetrics = createDefaultMetrics(summary);
+  // Add flag icons CSS
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.11.0/css/flag-icons.min.css';
+    document.head.appendChild(link);
+
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
 
   return (
     <div className="container mx-auto py-6 px-4">
       <div className="flex flex-col gap-6">
-        <DashboardHeader 
-          devicesCount={devices.length} 
-          regionsCount={Object.keys(summary.byRegion).length}
-          isLoading={isLoading}
+        <div>
+          <h1 className="text-2xl font-bold mb-1">UDI Global Registration Map</h1>
+          <p className="text-muted-foreground">
+            Interactive map of countries and regions where UDI registration is required
+          </p>
+        </div>
+
+        <UdiRegionFilter 
+          regions={regions} 
+          filter={filter} 
+          setFilter={setFilter} 
         />
 
-        <section className="mt-4">
-          {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {[...Array(8)].map((_, i) => (
-                <Skeleton key={i} className="h-32 w-full rounded-xl" />
-              ))}
-            </div>
-          ) : (
-            <KeyMetricsGrid metrics={keyMetrics} />
-          )}
-        </section>
-
-        <Tabs defaultValue="overview">
+        <Tabs defaultValue="map" className="w-full">
           <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="overview">Dashboard Overview</TabsTrigger>
-            <TabsTrigger value="details">Detailed Analysis</TabsTrigger>
+            <TabsTrigger value="map">Map View</TabsTrigger>
+            <TabsTrigger value="list">List View</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="overview" className="mt-6">
-            <DashboardOverview 
-              devices={devices}
-              summary={summary}
-              isLoading={isLoading}
-              statusByAuthority={statusByAuthority}
-            />
+          <TabsContent value="map" className="mt-6">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Global UDI Registration Map</CardTitle>
+                <CardDescription>
+                  Interactive map showing regions with UDI registration requirements
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0 relative">
+                <WorldMap regions={regions} filter={filter} />
+                <UdiMapLegend />
+              </CardContent>
+            </Card>
           </TabsContent>
           
-          <TabsContent value="details" className="mt-6">
-            <DetailedAnalysis 
-              devices={devices}
-              isLoading={isLoading}
-            />
+          <TabsContent value="list" className="mt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {filteredRegions.map(region => (
+                <UdiRegionCard 
+                  key={region.id} 
+                  region={region} 
+                  onClick={handleRegionSelect} 
+                />
+              ))}
+              
+              {filteredRegions.length === 0 && (
+                <div className="col-span-full p-8 text-center bg-muted rounded-lg">
+                  <p className="text-muted-foreground">No regions match your current filters</p>
+                </div>
+              )}
+            </div>
           </TabsContent>
         </Tabs>
+        
+        {selectedRegion && (
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  {selectedRegion.flagCode && (
+                    <span className={`fi fi-${selectedRegion.flagCode.toLowerCase()} mr-2`}></span>
+                  )}
+                  {selectedRegion.name} - {selectedRegion.database}
+                </DialogTitle>
+                <DialogDescription>
+                  <div className="mt-4 space-y-3">
+                    <div className="flex items-start gap-2">
+                      <Flag className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                      <div>
+                        <div className="font-medium">UDI Database</div>
+                        <div className="text-sm text-muted-foreground">{selectedRegion.database}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-2">
+                      <Info className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                      <div>
+                        <div className="font-medium">Registration Required</div>
+                        <div className="text-sm text-muted-foreground">
+                          <Badge 
+                            variant={selectedRegion.status === 'REQUIRED' ? 'default' : 'secondary'}
+                            className="mt-1"
+                          >
+                            {getStatusText(selectedRegion.status)}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {selectedRegion.implementationDate && (
+                      <div className="flex items-start gap-2">
+                        <Globe className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                        <div>
+                          <div className="font-medium">Implementation Date</div>
+                          <div className="text-sm text-muted-foreground">{selectedRegion.implementationDate}</div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {selectedRegion.description && (
+                      <div className="flex items-start gap-2">
+                        <MapPin className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                        <div>
+                          <div className="font-medium">Description</div>
+                          <div className="text-sm text-muted-foreground">{selectedRegion.description}</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </div>
   );
