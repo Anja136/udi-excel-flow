@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { UdiRegion } from '@/types/udiRegion';
 
@@ -190,7 +189,6 @@ const WorldMapSvg = ({ regions, onRegionClick }: WorldMapSvgProps) => {
                   height="40"
                 >
                   <div
-                    xmlns="http://www.w3.org/1999/xhtml"
                     className="flex items-center justify-center w-full h-full overflow-hidden rounded-full"
                   >
                     <span className={`fi fi-${region.flagCode.toLowerCase()} text-4xl`}></span>
