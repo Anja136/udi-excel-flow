@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,8 +25,10 @@ const Report = () => {
 
   // Filter regions based on selected filters
   const filteredRegions = regions.filter(region => {
-    const statusMatch = filter.status.length === 0 || filter.status.includes(region.status);
-    const regionMatch = filter.regions.length === 0 || filter.regions.includes(region.id);
+    if (!filter) return true;
+    
+    const statusMatch = !filter.status || filter.status.length === 0 || filter.status.includes(region.status);
+    const regionMatch = !filter.regions || filter.regions.length === 0 || filter.regions.includes(region.id);
     return statusMatch && regionMatch;
   });
 

@@ -39,20 +39,21 @@ const UdiRegionFilter = ({ regions, filter, setFilter }: UdiRegionFilterProps) =
 
   // Ensure we have arrays initialized
   const regionsList = regions || [];
-  const { regions: selectedRegions = [], status: selectedStatuses = [] } = filter || { regions: [], status: [] };
+  const selectedRegions = filter?.regions || [];
+  const selectedStatuses = filter?.status || [];
 
   const handleRegionChange = (regionId: string) => {
     setFilter({
-      ...filter,
       regions: selectedRegions.includes(regionId)
         ? selectedRegions.filter(r => r !== regionId)
-        : [...selectedRegions, regionId]
+        : [...selectedRegions, regionId],
+      status: selectedStatuses
     });
   };
 
   const handleStatusChange = (status: UdiRegistrationStatus) => {
     setFilter({
-      ...filter,
+      regions: selectedRegions,
       status: selectedStatuses.includes(status)
         ? selectedStatuses.filter(s => s !== status)
         : [...selectedStatuses, status]
