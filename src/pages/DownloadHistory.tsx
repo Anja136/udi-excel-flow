@@ -172,7 +172,7 @@ const DownloadHistory = () => {
           <h1 className="text-2xl font-bold">Download History</h1>
           <p className="text-muted-foreground">Your recent downloaded templates and sheets</p>
         </div>
-        <Button onClick={() => navigate('/')}>
+        <Button onClick={() => navigate('/download-data')}>
           <DownloadCloud className="h-4 w-4 mr-2" />
           Download New Template
         </Button>
